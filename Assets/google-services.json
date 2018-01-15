@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "797276860044",
+    "firebase_url": "https://rune-of-tempest.firebaseio.com",
+    "project_id": "rune-of-tempest",
+    "storage_bucket": "rune-of-tempest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797276860044:android:8a77bd7741996c8c",
+        "android_client_info": {
+          "package_name": "eu.kudan.ar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797276860044-raoktirgiog1iet5291ht0mgf22o582v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjKs5KsvnNu8XgfMK0GlDQ3-2guU4iYbA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
