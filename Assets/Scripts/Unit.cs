@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
+using Kudan.AR;
 
 public class Unit : MonoBehaviour {
 	
@@ -16,42 +18,35 @@ public class Unit : MonoBehaviour {
 	bool moving = false;
 	bool attacking = false;
 	Animator animator;
+	Vector3 different;
+	int frame;
 
 	public void Move(Hexagon target){
 		this.position = target;
-		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.x + "," + target.y + "," + target.z).position;
-		this.targetPosition[1] += 0.5f;
+		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.x + "," + target.y + "," + target.z)
+							.position + new Vector3(0, 0.5f, 0);
+		
+		this.different = (this.targetPosition - transform.position) / 45;
+		frame = 0;
+		/*Vector3 lookat = (this.targetPosition - transform.position);
+		transform.rotation = Quaternion.LookRotation(lookat);*/
+
 		this.moving = true;
+		//Play moving animation
+		this.animator.ResetTrigger("Idle");
+		this.animator.SetTrigger("Move");
 	}
 
 	private void Moving(){
-		//Play moving animation
-		if(this.moving && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("Move")){
-			this.animator.ResetTrigger("Idle");
-			this.animator.SetTrigger("Move");
-		}else if(this.moving == false && !this.animator.GetCurrentAnimatorStateInfo(0).IsName("Idle")){
-			this.animator.SetTrigger("Idle");
-			this.animator.ResetTrigger("Move");
-		}
-
-		//Check if unit is moving
-		if(this.moving){
-			//Rotate unit toward target
-			Quaternion target = Quaternion.LookRotation(this.targetPosition - transform.position);
-			transform.rotation = Quaternion.Slerp(transform.rotation, target, Time.deltaTime * speed);
-
-			//Moving unit by transform its position
-			float step = speed * Time.deltaTime;
-			transform.position = Vector3.MoveTowards(transform.position, this.targetPosition, step);
-		}
-		
-		//Check if unit is reached its destination
-		if(Mathf.Abs(transform.position.x - this.targetPosition.x) < 0.1 && Mathf.Abs(transform.position.z - this.targetPosition.z) < 0.1){
-			//Stop moving
-			this.moving = false;
-			//Rotate unit back to its origin
-			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * this.speed);
-
+		frame++;
+		if(frame <= 45){
+			if(frame == 45){
+				this.moving = false;
+				//Stop moving and play idle animation
+				this.animator.ResetTrigger("Move");
+				this.animator.SetTrigger("Idle");
+			}
+			transform.position += this.different;
 		}
 	}
 
@@ -81,14 +76,14 @@ public class Unit : MonoBehaviour {
 
 		if(this.attacking){
 			//Rotate unit toward target
-			Quaternion targetPosition = Quaternion.LookRotation(this.targetPosition - transform.position);
-			transform.rotation = Quaternion.Slerp(transform.rotation, targetPosition, Time.deltaTime * speed);
+			/*Quaternion targetPosition = Quaternion.LookRotation(this.targetPosition - transform.position);
+			transform.rotation = Quaternion.Slerp(transform.rotation, targetPosition, Time.deltaTime * speed);*/
 
 			//Stop attacking after some seconds
 			StartCoroutine(ExecuteAfterTime(3f));
 		}else{
 			//Rotate unit back to its origin
-			transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * this.speed);
+			//transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * this.speed);
 		}
 	}
 

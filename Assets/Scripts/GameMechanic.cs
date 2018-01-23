@@ -17,8 +17,9 @@ public class GameMechanic : MonoBehaviour {
 	private List<GameObject> hilightTiles = new List<GameObject>();
 	public List<Unit> unit = new List<Unit>();
 	public Unit selectedUnit; 
+	public GameObject unitsButton;
 
-	GameObject SearchTile(int x, int y, int z){
+	/*GameObject SearchTile(int x, int y, int z){
 		Transform tile = this.map.transform.Find(x + "," + y + "," + z);
 		if(tile){
 			return tile.gameObject;
@@ -53,33 +54,51 @@ public class GameMechanic : MonoBehaviour {
 				ChangeTileColor(tile, Color.red);
 			}
 		}
-	}
-
-	/*public void OnMiniMapSelected(){
-		Debug.Log(EventSystem.current.currentSelectedGameObject.name);
 	}*/
+	
+	public void onCharacterSelected(){
+		Color white = Color.white;
+		white.a = 0.5f;
+		Color red = Color.red;
+		red.a = 0.5f;
+		//Debug.Log(EventSystem.current.currentSelectedGameObject.name);
+		//Convert button color of previous selected unit to white
+		if(this.selectedUnit != null){
+			this.unitsButton.transform.Find(this.selectedUnit.name).GetComponent<Image>().color = white;
+		}
+		//Convert button color of current selected unit to red
+		EventSystem.current.currentSelectedGameObject.GetComponent<Image>().color = red;
+		this.selectedUnit = GameObject.Find("Drivers").transform.Find(EventSystem.current.currentSelectedGameObject.name).GetComponent<Unit>();
+	}
 
 	// Use this for initialization
 	void Start () {
 		//Get generator
 		this.generator = gameObject.GetComponent<Generator>();
 
-		this.map = this.generator.GenerateMap();
-		
-		//HilightTiles(this.cubeHelper.Neighbor(new Hexagon(0, 0, 0)));
+		//this.unitsButton = GameObject.Find("UserInterface").transform.Find("MainGame").Find("Units").gameObject;
 
-		Unit golem = this.generator.GenerateUnit("Golem", "GolemTest", "TestTeam", new Hexagon(0, 0, 0));
+		//this.map = this.generator.GenerateMap();
+		this.map = GameObject.Find("Drivers").transform.Find("Map").gameObject;
+
+		this.gameObject.GetComponent<Database>().ReadUnitStatus();
+
+		Unit golem = this.generator.GenerateUnit("Golem", "Unit1", "TestTeam", new Hexagon(0, 0, 0));
 		this.unit.Add(golem);
-		Unit golem2 = this.generator.GenerateUnit("Golem", "GolemTest2", "TestTeam2", new Hexagon(-4, 3, 1));
+		Unit golem2 = this.generator.GenerateUnit("Golem", "Unit2", "TestTeam2", new Hexagon(-4, 3, 1));
 		this.unit.Add(golem2);
-		this.selectedUnit = unit[0];
 
-		this.generator.GenerateImage("Golem", new Vector3(0, 0, 0));
+		//At start game select first unit as a selected unit
+		/*this.selectedUnit = unit[0];
+		Color red = Color.red;
+		red.a = 0.5f;
+		this.unitsButton.transform.Find(this.selectedUnit.name).GetComponent<Image>().color = red;*/
 	}
 
 	// Update is called once per frame
-	void Update () {
-		//this.unit[0].Move(new Hexagon(-5, 5, 0));
+	void Update(){
+
+		//this.unitsButton.transform.Find(this.selectedUnit.name).GetComponent<Button>().OnSelect(null);
 
 		//Raycast for detecting minimap
 		/*if((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetMouseButtonDown(0)){

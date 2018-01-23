@@ -12,9 +12,9 @@ public class Database : MonoBehaviour {
 	public DatabaseReference reference;
 	public Dictionary<string, Status> unitStatus;
 
-	private void ReadUnitStatus(){
+	public void ReadUnitStatus(){
 		TextAsset file = Resources.Load<TextAsset>("Files/Units");
-		this.unitStatus = JsonConvert.DeserializeObject<Dictionary<string, Status>>(file.text);
+		this.unitStatus = JsonConvert.DeserializeObject<Dictionary<string, Status>>(file.ToString());
 		/*string path = Path.Combine(Application.streamingAssetsPath, "Units.json");
 		//Debug.Log(path);
 		if(File.Exists(path)){
@@ -23,6 +23,10 @@ public class Database : MonoBehaviour {
 		}else{
 			Debug.Log("Error!!! File at" + path + " doesn't exist");
 		}*/
+	}
+
+	public Status GetUnitStatus(string unit){
+		return this.unitStatus[unit];
 	}
 
 	public Task<DataSnapshot> ReadAll(string query){
@@ -36,7 +40,7 @@ public class Database : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		//Read unit status from file
-		ReadUnitStatus();
+		//ReadUnitStatus();
 
 		// Set up the Editor before calling into the realtime database.
 		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://rune-of-tempest.firebaseio.com/");
