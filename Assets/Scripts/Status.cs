@@ -4,8 +4,8 @@ using UnityEngine;
 using Newtonsoft.Json;
 
 public class Status : MonoBehaviour {
-	[JsonProperty("name")]
-	public string unitName;
+	[JsonProperty("type")]
+	public string type;
 	[JsonProperty("hp")]
 	public int maxHp;
 	[JsonProperty("attack")]

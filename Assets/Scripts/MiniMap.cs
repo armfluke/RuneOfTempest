@@ -13,11 +13,13 @@ public class MiniMap : MonoBehaviour {
 	private GameMechanic gameMechanic;
 	private Unit selectedUnit;
 	private Network network;
+	GameObject userInterface;
+	GameObject miniMap;
+	GameObject mainGame;
 
 	public void Back(){
-		GameObject userInterface = GameObject.Find("UserInterface");
-		userInterface.transform.Find("MiniMap").gameObject.SetActive(false);
-		userInterface.transform.Find("UnitDetails").gameObject.SetActive(true);		
+		this.userInterface.transform.Find("MiniMap").gameObject.SetActive(false);
+		this.userInterface.transform.Find("UnitDetails").gameObject.SetActive(true);		
 		//TODO: reset all command when back
 		if(this.command.move){
 			ResetMiniMapHilightForMoving();
@@ -27,9 +29,7 @@ public class MiniMap : MonoBehaviour {
 	}
 
 	public void OnMiniMapSelected(){
-		GameObject userInterface = GameObject.Find("UserInterface");
-		GameObject mainGame = userInterface.transform.Find("MainGame").gameObject;
-		GameObject miniMap = userInterface.transform.Find("MiniMap").gameObject;
+		
 		Debug.Log(EventSystem.current.currentSelectedGameObject.name);
 		this.tile = EventSystem.current.currentSelectedGameObject;
 		this.hexagon = EventSystem.current.currentSelectedGameObject.GetComponent<Hexagon>();
@@ -47,11 +47,11 @@ public class MiniMap : MonoBehaviour {
 			
 			if(checkRange && !unitChecking(this.hexagon)){
 				ResetMiniMapHilightForMoving();
-				miniMap.SetActive(false);
-				mainGame.SetActive(true);
+				this.miniMap.SetActive(false);
+				this.mainGame.SetActive(true);
 				this.command.move = false;
 				
-				this.network.MoveUnit(this.selectedUnit.name, this.selectedUnit.position, this.hexagon);
+				this.network.MoveUnit(this.selectedUnit.position, this.hexagon);
 				//Move();
 			}
 		}else if(this.command.attack == true){
@@ -59,14 +59,17 @@ public class MiniMap : MonoBehaviour {
 			if(targetUnit && targetUnit != this.selectedUnit){
 				//TODO: check if unit is not in the same team**********************************
 				Debug.Log(targetUnit.name);
-				miniMap.SetActive(false);
-				mainGame.SetActive(true);
+				this.miniMap.SetActive(false);
+				this.mainGame.SetActive(true);
 				this.command.attack = false;
-				Attack(targetUnit);
+
+
+				this.network.AttackUnit(this.selectedUnit.position, targetUnit.position);
+				//Attack(targetUnit);
 			}
 		}else if(this.command.skill == true){
-			miniMap.SetActive(false);
-			mainGame.SetActive(true);
+			this.miniMap.SetActive(false);
+			this.mainGame.SetActive(true);
 			this.command.skill = false;
 			Skill();
 		}
@@ -82,8 +85,7 @@ public class MiniMap : MonoBehaviour {
 	}
 
 	public void HilightMiniMapForMoving(){
-		GameObject userInterface = GameObject.Find("UserInterface");
-		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
+		Transform miniMap = this.miniMap.transform.Find("MiniMap");
 		Color green = Color.green;
 		green.a = 0.65f;
 		Color blue = Color.blue;
@@ -102,8 +104,7 @@ public class MiniMap : MonoBehaviour {
 	}
 	
 	public void ResetMiniMapHilightForMoving(){
-		GameObject userInterface = GameObject.Find("UserInterface");
-		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
+		Transform miniMap = this.miniMap.transform.Find("MiniMap");
 		Color white = Color.white;
 		white.a = 0.275f;
 
@@ -116,17 +117,21 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
-	public void Move(string unitName, Hexagon from, Hexagon to){
-		GameObject userInterface = GameObject.Find("UserInterface");
-		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
-		Transform unitImage = miniMap.transform.Find(from.x + "," + from.y + "," + from.z)
-							.Find(unitName).transform;
+	public void Move(Hexagon from, Hexagon to){
+		Unit unit = SearchUnit(from);
+
+		//Move unit image on minimap
+		Transform miniMap = this.miniMap.transform.Find("MiniMap");
+		Transform unitImage = miniMap.transform.Find(unit.position.x + "," + unit.position.y + "," + unit.position.z)
+							.Find(unit.name).transform;
 
 		Transform targetTile = miniMap.transform.Find(to.x + "," + to.y + "," + to.z);
 		unitImage.parent = targetTile.transform;
 		unitImage.GetComponent<RectTransform>().position = targetTile.GetComponent<RectTransform>().position;
 
-		GameObject.Find("Drivers").transform.Find(unitName).GetComponent<Unit>().Move(to);
+		unit.Move(to);
+
+		//GameObject.Find("Drivers").transform.Find(unitName).GetComponent<Unit>().Move(to);
 
 		/*foreach(Unit unit in this.gameMechanic.unit){
 			Debug.Log(unit.position.x+","+unit.position.y+","+unit.position.z+"||"+from.x+","+from.y+","+from.z+"||"+(unit.position.x == from.x && unit.position.x == from.y && unit.position.x == from.z));
@@ -160,8 +165,7 @@ public class MiniMap : MonoBehaviour {
 
 	public void HilightMiniMapForAttacking(){
 		//TODO: Check team
-		GameObject userInterface = GameObject.Find("UserInterface");
-		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
+		Transform miniMap = this.miniMap.transform.Find("MiniMap");
 		Color red = Color.red;
 		red.a = 0.65f;
 		Color blue = Color.blue;
@@ -180,8 +184,7 @@ public class MiniMap : MonoBehaviour {
 	}
 
 	public void ResetMiniMapHilightForAttacking(){
-		GameObject userInterface = GameObject.Find("UserInterface");
-		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
+		Transform miniMap = this.miniMap.transform.Find("MiniMap");
 		Color white = Color.white;
 		white.a = 0.275f;
 
@@ -194,10 +197,15 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
-	private void Attack(Unit targetUnit){
-		this.selectedUnit.Attack(targetUnit);
-
+	public void Attack(Hexagon from, Hexagon to){
+		Unit unit = SearchUnit(from);
+		Unit targetUnit = SearchUnit(to);
+		unit.Attack(targetUnit);
 	}
+
+	/*private void Attack(Unit targetUnit){
+		this.selectedUnit.Attack(targetUnit);
+	}*/
 
 	private void Skill(){
 
@@ -208,6 +216,9 @@ public class MiniMap : MonoBehaviour {
 		this.gameMechanic = gameObject.GetComponent<GameMechanic>();
 		this.command = gameObject.GetComponent<Command>();
 		this.network = GameObject.Find("NetworkManager").GetComponent<Network>();
+		this.userInterface = GameObject.Find("UserInterface");
+		this.mainGame = userInterface.transform.Find("MainGame").gameObject;
+		this.miniMap = userInterface.transform.Find("MiniMap").gameObject;
 
 		//Attach Hexagon sript and coordinate to each tile ***For adding new tile
 		/*int count = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").childCount;

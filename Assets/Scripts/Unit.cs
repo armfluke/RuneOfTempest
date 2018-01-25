@@ -7,6 +7,7 @@ using Kudan.AR;
 public class Unit : MonoBehaviour {
 	
 	public Hexagon position;
+	public string unitName;
 	public string team;
 	public int hp;
 	public Status status;
@@ -20,6 +21,7 @@ public class Unit : MonoBehaviour {
 	Animator animator;
 	Vector3 different;
 	int frame;
+	float diffAngle;
 
 	public void Move(Hexagon target){
 		this.position = target;
@@ -27,9 +29,19 @@ public class Unit : MonoBehaviour {
 							.position + new Vector3(0, 0.5f, 0);
 		
 		this.different = (this.targetPosition - transform.position) / 45;
+		
+		//Calculate rotation angle
+		Vector3 targetDir = this.targetPosition - transform.position;
+        //  Acute angle [0,180]
+        float angle = Vector3.Angle(targetDir, transform.forward);
+
+        //  -Acute angle [180,-179]
+        float sign = Mathf.Sign(Vector3.Dot(Vector3.up, Vector3.Cross(targetDir, transform.forward)));
+        float signed_angle = angle * -sign;
+        this.diffAngle = signed_angle / 15;
+		
 		frame = 0;
-		/*Vector3 lookat = (this.targetPosition - transform.position);
-		transform.rotation = Quaternion.LookRotation(lookat);*/
+		
 
 		this.moving = true;
 		//Play moving animation
@@ -47,6 +59,10 @@ public class Unit : MonoBehaviour {
 				this.animator.SetTrigger("Idle");
 			}
 			transform.position += this.different;
+
+			if(frame <= 15){
+				transform.Rotate(Vector3.up * this.diffAngle, Space.Self);
+			}
 		}
 	}
 

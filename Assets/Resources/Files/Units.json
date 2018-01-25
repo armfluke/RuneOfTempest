@@ -1,6 +1,6 @@
 {
     "Golem": {
-        "name": "Golem",
+        "type": "Golem",
         "hp": 20,
         "attack": 2,
         "range": 1,
@@ -12,7 +12,7 @@
         ]
     },
     "Knight": {
-        "name": "Knight",
+        "type": "Knight",
         "hp": 12,
         "attack": 4,
         "range": 1,

@@ -58,6 +58,7 @@ public class Generator : MonoBehaviour {
 
 		//Add detail of unit
 		Unit unitDetails = unit.AddComponent<Unit>();
+		unitDetails.unitName = unitName;
 		unitDetails.position = position;
 		unitDetails.team = team;
 		unitDetails.status = gameObject.GetComponent<Database>().unitStatus[unitType];

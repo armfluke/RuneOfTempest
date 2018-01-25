@@ -18,43 +18,6 @@ public class GameMechanic : MonoBehaviour {
 	public List<Unit> unit = new List<Unit>();
 	public Unit selectedUnit; 
 	public GameObject unitsButton;
-
-	/*GameObject SearchTile(int x, int y, int z){
-		Transform tile = this.map.transform.Find(x + "," + y + "," + z);
-		if(tile){
-			return tile.gameObject;
-		}
-		return null;
-	}
-
-	void ChangeTileColor(GameObject tile, Color color){
-		tile.GetComponent<Renderer>().material.color = color;
-	}
-
-	void UnhilightTiles(){
-		int count = this.hilightTiles.Count;
-		for(int i = 0; i < count; i++){
-			ChangeTileColor(this.hilightTiles[i], Color.white);
-		}
-		this.hilightTiles.Clear();
-	}
-
-	void HilightTiles(Hexagon[] tiles){
-		GameObject tile;
-
-		if(this.hilightTiles.Count != 0){
-			UnhilightTiles();
-		}
-
-		for(int i=0; i<tiles.Length; i++){
-			//Debug.Log(tiles[i].x + " " + tiles[i].y + " " + tiles[i].z);
-			tile = SearchTile(tiles[i].x, tiles[i].y, tiles[i].z);
-			if(tile){
-				this.hilightTiles.Add(tile);
-				ChangeTileColor(tile, Color.red);
-			}
-		}
-	}*/
 	
 	public void OnCharacterSelected(){
 		Color white = Color.white;
@@ -76,7 +39,7 @@ public class GameMechanic : MonoBehaviour {
 		//Get generator
 		this.generator = gameObject.GetComponent<Generator>();
 
-		//this.unitsButton = GameObject.Find("UserInterface").transform.Find("MainGame").Find("Units").gameObject;
+		this.unitsButton = GameObject.Find("UserInterface").transform.Find("MainGame").Find("Units").gameObject;
 
 		//this.map = this.generator.GenerateMap();
 		this.map = GameObject.Find("Drivers").transform.Find("Map").gameObject;
