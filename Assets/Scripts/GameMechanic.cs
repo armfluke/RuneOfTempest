@@ -46,9 +46,9 @@ public class GameMechanic : MonoBehaviour {
 
 		this.gameObject.GetComponent<Database>().ReadUnitStatus();
 
-		Unit golem = this.generator.GenerateUnit("Golem", "Unit1", "TestTeam", new Hexagon(0, 0, 0));
+		Unit golem = this.generator.GenerateUnit("Golem", "Unit1", 1, new Hexagon(0, 0, 0));
 		this.unit.Add(golem);
-		Unit golem2 = this.generator.GenerateUnit("Golem", "Unit2", "TestTeam2", new Hexagon(-4, 3, 1));
+		Unit golem2 = this.generator.GenerateUnit("Golem", "Unit2", 2, new Hexagon(-4, 3, 1));
 		this.unit.Add(golem2);
 
 		//At start game select first unit as a selected unit
@@ -61,22 +61,5 @@ public class GameMechanic : MonoBehaviour {
 	// Update is called once per frame
 	void Update(){
 
-		//this.unitsButton.transform.Find(this.selectedUnit.name).GetComponent<Button>().OnSelect(null);
-
-		//Raycast for detecting minimap
-		/*if((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetMouseButtonDown(0)){
-			Ray ray;
-			if((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)){
-				ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-			}else{
-				ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-			}
-			RaycastHit hitInfo;
-			if(Physics.Raycast(ray, out hitInfo)){
-				if(hitInfo.transform.parent.name == "MiniMap"){
-					Debug.Log(hitInfo.transform.name);
-				}
-			}
-		}*/
 	}
 }

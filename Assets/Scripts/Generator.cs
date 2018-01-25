@@ -33,7 +33,7 @@ public class Generator : MonoBehaviour {
 	}
 
 	//Generate unit
-	public Unit GenerateUnit(string unitType, string unitName, string team, Hexagon position){
+	public Unit GenerateUnit(string unitType, string unitName, int team, Hexagon position){
 		Vector3 origin = new Vector3(0, 0, 0);	//Default location if unit is not found
 
 		//Instantiate gameobject to hold character and transform it under correct hierachy 

@@ -8,7 +8,7 @@ public class Unit : MonoBehaviour {
 	
 	public Hexagon position;
 	public string unitName;
-	public string team;
+	public int team;
 	public int hp;
 	public Status status;
 	public string state;

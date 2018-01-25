@@ -4,13 +4,38 @@ using UnityEngine.Networking.NetworkSystem;
 
 public class Network : MonoBehaviour {
     
-    const short channal = 1000;
-    const short move = 1001;
-    const short attack = 1002;
+    const short CHANNAL = 999;
+    const short TEAM = 1000;
+    const short MOVE = 1001;
+    const short ATTACK = 1002;
     private bool setting = true;
     public NetworkManager networkManager;
     public GameObject gameMechanic;
     private Network network;
+    private Player player;
+    public int team = 1;
+
+    public void RequestForTeam(){
+        //TeamRequestMessage msg = new TeamRequestMessage();
+        this.networkManager.client.Send(TEAM, new EmptyMessage());
+    }
+
+    public void OnServerTeamRequestMessageReceived(NetworkMessage msg){
+        TeamAssignMessage message = new TeamAssignMessage();
+        message.connectionId = msg.conn.connectionId;
+        message.team = this.team;
+        this.team++;
+        if(this.team == 5){
+            this.team = 1;
+        }
+        NetworkServer.SendToClient(msg.conn.connectionId, TEAM, message);
+    }
+
+    public void OnClientTeamAssigntMessageReceived(NetworkMessage msg){
+        TeamAssignMessage message = msg.ReadMessage<TeamAssignMessage>();
+        this.player.connectionId = message.connectionId;
+        this.player.team = message.team;
+    }
 
     public void OnMessageReceived(NetworkMessage msg){
         Test test = msg.ReadMessage<Test>();
@@ -22,28 +47,28 @@ public class Network : MonoBehaviour {
         MoveMessage msg = new MoveMessage();
         msg.from = new Vector3(from.x, from.y, from.z);
         msg.to = new Vector3(to.x, to.y, to.z);
-        this.networkManager.client.Send(move, msg);
+        this.networkManager.client.Send(MOVE, msg);
     }
 
     public void AttackUnit(Hexagon from, Hexagon to){
         MoveMessage msg = new MoveMessage();
         msg.from = new Vector3(from.x, from.y, from.z);
         msg.to = new Vector3(to.x, to.y, to.z);
-        this.networkManager.client.Send(attack, msg);
+        this.networkManager.client.Send(ATTACK, msg);
     }
 
     public void OnServerMoveMessageReceived(NetworkMessage msg){
         MoveMessage message = msg.ReadMessage<MoveMessage>();
         Debug.Log("Move unit | From: "+message.from.x+","+message.from.y+","+message.from.z+"|"+"To: "+message.to.x+","+message.to.y+","+message.to.z);
 
-        NetworkServer.SendToAll(move, message);
+        NetworkServer.SendToAll(MOVE, message);
     }
 
     public void OnServerAttackMessageReceived(NetworkMessage msg){
         MoveMessage message = msg.ReadMessage<MoveMessage>();
         Debug.Log("Attack unit | From: "+message.from.x+","+message.from.y+","+message.from.z+"|"+"To: "+message.to.x+","+message.to.y+","+message.to.z);
 
-        NetworkServer.SendToAll(attack, message);
+        NetworkServer.SendToAll(ATTACK, message);
     }
 
     public void OnClientMoveMessageReceived(NetworkMessage msg){
@@ -65,10 +90,13 @@ public class Network : MonoBehaviour {
     void Start(){
         this.gameMechanic = GameObject.Find("GameMechanic");
         this.networkManager = gameObject.GetComponent<NetworkManager>();
+        this.player = GameObject.Find("Player").GetComponent<Player>();
         //Setting server handler
-        NetworkServer.RegisterHandler(channal, OnMessageReceived);
-        NetworkServer.RegisterHandler(move, OnServerMoveMessageReceived);
-        NetworkServer.RegisterHandler(attack, OnServerAttackMessageReceived);
+        NetworkServer.RegisterHandler(CHANNAL, OnMessageReceived);
+        NetworkServer.RegisterHandler(TEAM, OnServerTeamRequestMessageReceived);
+        NetworkServer.RegisterHandler(MOVE, OnServerMoveMessageReceived);
+        NetworkServer.RegisterHandler(ATTACK, OnServerAttackMessageReceived);
+
     }
 
     Hexagon hexagon;
@@ -80,9 +108,10 @@ public class Network : MonoBehaviour {
         //Register client handler
         if(this.networkManager.client != null && setting){
             setting = false;
-            this.networkManager.client.RegisterHandler(channal, OnMessageReceived);
-            this.networkManager.client.RegisterHandler(move, OnClientMoveMessageReceived);
-            this.networkManager.client.RegisterHandler(attack, OnClientAttackMessageReceived);
+            this.networkManager.client.RegisterHandler(CHANNAL, OnMessageReceived);
+            this.networkManager.client.RegisterHandler(TEAM, OnClientTeamAssigntMessageReceived);
+            this.networkManager.client.RegisterHandler(MOVE, OnClientMoveMessageReceived);
+            this.networkManager.client.RegisterHandler(ATTACK, OnClientAttackMessageReceived);
         }
 
         /*if(Input.GetKeyDown(KeyCode.S)){
@@ -99,11 +128,20 @@ public class Network : MonoBehaviour {
     }
     
     void OnGUI(){
-        GUI.Label(new Rect(2, 10, 150, 100), this.hexagon.x+","+this.hexagon.y+","+this.hexagon.z); 
-        GUI.Label(new Rect(2, 30, 150, 100), this.hexagon2.x+","+this.hexagon2.y+","+this.hexagon2.z);
+        //GUI.Label(new Rect(2, 10, 150, 100), this.hexagon.x+","+this.hexagon.y+","+this.hexagon.z); 
+        //GUI.Label(new Rect(2, 30, 150, 100), this.hexagon2.x+","+this.hexagon2.y+","+this.hexagon2.z);
         //GUI.Label(new Rect(2, 30, 150, 100), "Press B for both");       
         //GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
     }
+}
+
+public class TeamRequestMessage: MessageBase {
+
+}
+
+public class TeamAssignMessage: MessageBase {
+    public int team;
+    public int connectionId;
 }
 
 public class MoveMessage: MessageBase {
