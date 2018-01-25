@@ -12,6 +12,7 @@ public class MiniMap : MonoBehaviour {
 	private Command command;
 	private GameMechanic gameMechanic;
 	private Unit selectedUnit;
+	private Network network;
 
 	public void Back(){
 		GameObject userInterface = GameObject.Find("UserInterface");
@@ -49,7 +50,9 @@ public class MiniMap : MonoBehaviour {
 				miniMap.SetActive(false);
 				mainGame.SetActive(true);
 				this.command.move = false;
-				Move();
+				
+				this.network.MoveUnit(this.selectedUnit.name, this.selectedUnit.position, this.hexagon);
+				//Move();
 			}
 		}else if(this.command.attack == true){
 			Unit targetUnit = SearchUnit(this.hexagon);
@@ -113,7 +116,29 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
-	private void Move(){
+	public void Move(string unitName, Hexagon from, Hexagon to){
+		GameObject userInterface = GameObject.Find("UserInterface");
+		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
+		Transform unitImage = miniMap.transform.Find(from.x + "," + from.y + "," + from.z)
+							.Find(unitName).transform;
+
+		Transform targetTile = miniMap.transform.Find(to.x + "," + to.y + "," + to.z);
+		unitImage.parent = targetTile.transform;
+		unitImage.GetComponent<RectTransform>().position = targetTile.GetComponent<RectTransform>().position;
+
+		GameObject.Find("Drivers").transform.Find(unitName).GetComponent<Unit>().Move(to);
+
+		/*foreach(Unit unit in this.gameMechanic.unit){
+			Debug.Log(unit.position.x+","+unit.position.y+","+unit.position.z+"||"+from.x+","+from.y+","+from.z+"||"+(unit.position.x == from.x && unit.position.x == from.y && unit.position.x == from.z));
+			if(unit.position.x == from.x && unit.position.x == from.y && unit.position.x == from.z){
+				Debug.Log("Unit found: "+unit.name);
+				unit.Move(to);
+				break;
+			}
+		}*/
+	}
+
+	/*private void Move(){
 		GameObject userInterface = GameObject.Find("UserInterface");
 		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
 		Hexagon position = this.selectedUnit.position;
@@ -122,7 +147,7 @@ public class MiniMap : MonoBehaviour {
 		unitImage.parent = this.tile.transform;
 		unitImage.GetComponent<RectTransform>().position = this.tile.GetComponent<RectTransform>().position;
 		this.selectedUnit.Move(this.hexagon);
-	}
+	}*/
 
 	private Unit SearchUnit(Hexagon position){
 		foreach(Unit unit in this.gameMechanic.unit){
@@ -182,6 +207,7 @@ public class MiniMap : MonoBehaviour {
 	void Start () {
 		this.gameMechanic = gameObject.GetComponent<GameMechanic>();
 		this.command = gameObject.GetComponent<Command>();
+		this.network = GameObject.Find("NetworkManager").GetComponent<Network>();
 
 		//Attach Hexagon sript and coordinate to each tile ***For adding new tile
 		/*int count = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").childCount;

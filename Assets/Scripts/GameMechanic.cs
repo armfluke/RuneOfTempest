@@ -56,7 +56,7 @@ public class GameMechanic : MonoBehaviour {
 		}
 	}*/
 	
-	public void onCharacterSelected(){
+	public void OnCharacterSelected(){
 		Color white = Color.white;
 		white.a = 0.5f;
 		Color red = Color.red;
