@@ -15,14 +15,19 @@ public class Network : MonoBehaviour {
     private Player player;
     public int team = 1;
 
+    public void OnConnected(NetworkMessage msg){
+        RequestForTeam();
+    }
+
     public void RequestForTeam(){
         //TeamRequestMessage msg = new TeamRequestMessage();
+        //Debug.Log(this.networkManager.client.isConnected);
+        //while(this.networkManager.client.isConnected == false){Debug.Log("Not Connected");};
         this.networkManager.client.Send(TEAM, new EmptyMessage());
     }
 
     public void OnServerTeamRequestMessageReceived(NetworkMessage msg){
         TeamAssignMessage message = new TeamAssignMessage();
-        message.connectionId = msg.conn.connectionId;
         message.team = this.team;
         this.team++;
         if(this.team == 5){
@@ -33,7 +38,6 @@ public class Network : MonoBehaviour {
 
     public void OnClientTeamAssigntMessageReceived(NetworkMessage msg){
         TeamAssignMessage message = msg.ReadMessage<TeamAssignMessage>();
-        this.player.connectionId = message.connectionId;
         this.player.team = message.team;
     }
 
@@ -102,12 +106,13 @@ public class Network : MonoBehaviour {
     Hexagon hexagon;
     Hexagon hexagon2;
     void Update(){
-        this.hexagon = GameObject.Find("Drivers").transform.Find("Unit1").GetComponent<Unit>().position;
-        this.hexagon2 = this.gameMechanic.GetComponent<GameMechanic>().unit[0].position;
+        //this.hexagon = GameObject.Find("Drivers").transform.Find("Unit1").GetComponent<Unit>().position;
+        //this.hexagon2 = this.gameMechanic.GetComponent<GameMechanic>().unit[0].position;
         // Debug.Log(this.hexagon.x+","+this.hexagon.y+","+this.hexagon.z);
         //Register client handler
         if(this.networkManager.client != null && setting){
             setting = false;
+            this.networkManager.client.RegisterHandler(MsgType.Connect, OnConnected);
             this.networkManager.client.RegisterHandler(CHANNAL, OnMessageReceived);
             this.networkManager.client.RegisterHandler(TEAM, OnClientTeamAssigntMessageReceived);
             this.networkManager.client.RegisterHandler(MOVE, OnClientMoveMessageReceived);

@@ -2,11 +2,22 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using Kudan.AR;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 
 public class Generator : MonoBehaviour {
+
+	private GameMechanic gameMechanic;
+	private Player player;
+	private int countTeam = 0;
+
+	private Hexagon[][] positionForEachTeam = new Hexagon[][]{
+		new Hexagon[]{new Hexagon(-6,-1,7), new Hexagon(-5,-2,7), new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), new Hexagon(-7,2,5), new Hexagon(-7,1,6)},
+		new Hexagon[]{new Hexagon(-1,-6,7), new Hexagon(-2,-5,7), new Hexagon(-1,-5,6), new Hexagon(0,-5,5), new Hexagon(1,-6,5), new Hexagon(2,-7,5), new Hexagon(1,-7,6)},
+		new Hexagon[]{new Hexagon(7,-1,-6), new Hexagon(7,-2,-5), new Hexagon(6,-1,-5), new Hexagon(5,0,-5), new Hexagon(5,1,-6), new Hexagon(5,2,-7), new Hexagon(6,1,-7)},
+		new Hexagon[]{new Hexagon(1,6,-7), new Hexagon(2,5,-7), new Hexagon(1,5,-6), new Hexagon(0,5,-5), new Hexagon(-1,6,-5), new Hexagon(-2,7,-5), new Hexagon(-1,7,-6)}
+	};
 
 	//Generate map and return map gameobject
 	public GameObject GenerateMap(){
@@ -45,7 +56,7 @@ public class Generator : MonoBehaviour {
 		characterObject.transform.parent = GameObject.Find("Drivers").transform;*/
 
 		//Get position of tile to instantiate unit
-		origin = gameObject.GetComponent<GameMechanic>().map.transform.Find(position.x + "," + position.y + "," + position.z)
+		origin = GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
 				.position + new Vector3(0, 0.5f, 0);
 
 		GameObject unit = (GameObject)Resources.Load("Prefabs/" + unitType, typeof(GameObject));
@@ -84,13 +95,31 @@ public class Generator : MonoBehaviour {
 		return image;
 	}
 
+	public void GenerateUnitForEachTeam(){
+		for(int i = 0; i < positionForEachTeam.Length; i++){
+			int index = 0;
+			foreach(Hexagon position in positionForEachTeam[i]){
+				this.gameMechanic.unit.Add(GenerateUnit("Golem", "Unit" + (index+1) + " Team" + (i+1), (i+1), position));
+				index++;
+			}
+		}
+
+
+	}
+
+	/*void OnGUI(){
+        GUI.Label(new Rect(2, 10, 150, 100), ""+NetworkServer.connections.Count);
+	}*/
+
 	// Use this for initialization
 	void Start () {
+		this.gameMechanic = gameObject.GetComponent<GameMechanic>();
+		this.player = GameObject.Find("Player").GetComponent<Player>();
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 }

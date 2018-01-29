@@ -26,9 +26,11 @@ public class Axial : MonoBehaviour  {
 }
 
 public class Hexagon : MonoBehaviour  {
-
+	[SerializeField]
 	public int x;
+	[SerializeField]
 	public int y;
+	[SerializeField]
 	public int z;
 
 	public Hexagon(int x, int y, int z){
