@@ -12,23 +12,16 @@ public class Unit : MonoBehaviour {
 	public Status status;
 	public string state;
 	Hexagon hexagon;
-	float speed = 3f;
 	Vector3 targetPosition;
 	RaycastHit hitInfo;
-	bool moving = false;
 	bool attacking = false;
 	Animator animator;
 	Vector3 different;
-	int frame;
+	private int frameMoving;
+	private int frameAttacking;
 	float diffAngle;
 
-	public void Move(Hexagon target){
-		this.position = target;
-		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.x + "," + target.y + "," + target.z)
-							.position + new Vector3(0, 0.5f, 0);
-		
-		this.different = (this.targetPosition - transform.position) / 45;
-		
+	public float calculateDifferentAngle(){
 		//Calculate rotation angle
 		Vector3 targetDir = this.targetPosition - transform.position;
         //  Acute angle [0,180]
@@ -37,29 +30,36 @@ public class Unit : MonoBehaviour {
         //  -Acute angle [180,-179]
         float sign = Mathf.Sign(Vector3.Dot(Vector3.up, Vector3.Cross(targetDir, transform.forward)));
         float signed_angle = angle * -sign;
-        this.diffAngle = signed_angle / 15;
-		
-		frame = 0;
-		
+		return signed_angle;
+	}
 
-		this.moving = true;
+	public void Move(Hexagon target){
+		this.position = target;
+		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.x + "," + target.y + "," + target.z)
+							.position + new Vector3(0, 0.5f, 0);
+		
+		this.different = (this.targetPosition - transform.position) / 45;
+		
+		this.diffAngle = calculateDifferentAngle() / 15;
+		
+		this.frameMoving = 0;
+		
 		//Play moving animation
 		this.animator.ResetTrigger("Idle");
 		this.animator.SetTrigger("Move");
 	}
 
 	private void Moving(){
-		frame++;
-		if(frame <= 45){
-			if(frame == 45){
-				this.moving = false;
+		this.frameMoving++;
+		if(this.frameMoving <= 45){
+			if(this.frameMoving == 45){
 				//Stop moving and play idle animation
 				this.animator.ResetTrigger("Move");
 				this.animator.SetTrigger("Idle");
 			}
 			transform.position += this.different;
 
-			if(frame <= 15){
+			if(this.frameMoving <= 15){
 				transform.Rotate(Vector3.up * this.diffAngle, Space.Self);
 			}
 		}
@@ -68,8 +68,13 @@ public class Unit : MonoBehaviour {
 	public void Attack(Unit target){
 		this.animator.SetTrigger("Attack");
 		this.attacking = true;
-		target.hp -= this.status.attack;
+
 		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.position.x + "," + target.position.y + "," + target.position.z).position;
+		this.diffAngle = calculateDifferentAngle() / 15;
+
+		this.frameAttacking = 0;
+
+		target.hp -= this.status.attack;
 		//Checking if unit died
 	}
 
@@ -86,25 +91,17 @@ public class Unit : MonoBehaviour {
 		isCoroutineExecuting = false;
 		this.attacking = false;
 	}
+	//StartCoroutine(ExecuteAfterTime(3f));
 
 	private void Attacking(){
-
-		if(this.attacking){
-			//Rotate unit toward target
-			/*Quaternion targetPosition = Quaternion.LookRotation(this.targetPosition - transform.position);
-			transform.rotation = Quaternion.Slerp(transform.rotation, targetPosition, Time.deltaTime * speed);*/
-
-			//Stop attacking after some seconds
-			StartCoroutine(ExecuteAfterTime(3f));
-		}else{
-			//Rotate unit back to its origin
-			//transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, 0), Time.deltaTime * this.speed);
+		this.frameAttacking++;
+		if(frameAttacking <= 15){
+			transform.Rotate(Vector3.up * this.diffAngle, Space.Self);
 		}
 	}
 
 	// Use this for initialization
 	void Start () {
-		this.targetPosition = transform.position;
 		this.animator = transform.gameObject.GetComponent<Animator>();
 	}
 	

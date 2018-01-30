@@ -28,7 +28,20 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
+	//function to check if range is valid
+	public bool CheckRange(Hexagon[] range){
+		foreach(Hexagon hex in range){
+			if(this.hexagon.x == hex.x && this.hexagon.y == hex.y && this.hexagon.z == hex.z){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void OnMiniMapSelected(){
+
+		bool checkRange;
+		Hexagon[] range;
 		
 		Debug.Log(EventSystem.current.currentSelectedGameObject.name);
 		this.tile = EventSystem.current.currentSelectedGameObject;
@@ -36,14 +49,8 @@ public class MiniMap : MonoBehaviour {
 		this.selectedUnit = this.gameMechanic.selectedUnit;
 
 		if(this.command.move == true){
-			Hexagon[] range = this.gameMechanic.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.move);
-			bool checkRange = false;
-			foreach(Hexagon hex in range){
-				if(this.hexagon.x == hex.x && this.hexagon.y == hex.y && this.hexagon.z == hex.z){
-					checkRange = true;
-					break;
-				}
-			}
+			range = this.gameMechanic.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.move);
+			checkRange = CheckRange(range);
 			
 			if(checkRange && !unitChecking(this.hexagon)){
 				ResetMiniMapHilightForMoving();
@@ -55,10 +62,12 @@ public class MiniMap : MonoBehaviour {
 				//Move();
 			}
 		}else if(this.command.attack == true){
+			range = this.gameMechanic.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.range);
+			checkRange = CheckRange(range);
+
 			Unit targetUnit = SearchUnit(this.hexagon);
-			if(targetUnit && targetUnit != this.selectedUnit){
-				//TODO: check if unit is not in the same team**********************************
-				Debug.Log(targetUnit.name);
+			if(targetUnit && checkRange && targetUnit.team != this.selectedUnit.team/*targetUnit != this.selectedUnit*/){
+				Debug.Log("Attack "+targetUnit.name);
 				this.miniMap.SetActive(false);
 				this.mainGame.SetActive(true);
 				this.command.attack = false;

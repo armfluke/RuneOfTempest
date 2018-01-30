@@ -120,6 +120,6 @@ public class Generator : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		Debug.Log(NetworkServer.connections.Count);
 	}
 }
