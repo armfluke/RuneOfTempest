@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 public class GameMechanic : MonoBehaviour {
 
-	public const int MAX_PLAYER = 2;
+	public const int MAX_PLAYER = 1;
 
 	public Cube cube = new Cube();
 	Generator generator;
@@ -34,15 +34,20 @@ public class GameMechanic : MonoBehaviour {
 		}
 		//Convert button color of current selected unit to red
 		EventSystem.current.currentSelectedGameObject.GetComponent<Image>().color = red;
-		this.selectedUnit = GameObject.Find("Drivers").transform.Find(EventSystem.current.currentSelectedGameObject.name + " Team" + this.player.team).GetComponent<Unit>();
+
+		//Search for unit
+		foreach(Unit unit in this.unit){
+			if(unit.unitName == EventSystem.current.currentSelectedGameObject.name + " Team" + this.player.team){
+				this.selectedUnit = unit;
+				break;
+			}else{
+				this.selectedUnit = null;
+			}
+		}
+		//this.selectedUnit = GameObject.Find("Drivers").transform.Find(EventSystem.current.currentSelectedGameObject.name + " Team" + this.player.team).GetComponent<Unit>();
 	}
 
 	public void StartGame(){
-		/*Unit golem = this.generator.GenerateUnit("Golem", "Unit1", 1, new Hexagon(0, 0, 0));
-		this.unit.Add(golem);
-		Unit golem2 = this.generator.GenerateUnit("Golem", "Unit2", 2, new Hexagon(-4, 3, 1));
-		this.unit.Add(golem2);*/
-
 		this.turnManager.currentTeamTurn = 1;
 		this.turnManager.time = 90f;
 		this.turnManager.turn = 1;
@@ -62,25 +67,11 @@ public class GameMechanic : MonoBehaviour {
 
 		this.player = GameObject.Find("Player").GetComponent<Player>();
 
-		//this.map = this.generator.GenerateMap();
-		//this.map = GameObject.Find("Drivers").transform.Find("Map").gameObject;
-
 		this.gameObject.GetComponent<Database>().ReadUnitStatus();
 
 		StartGame();
 
 		this.generator.GenerateUnitForEachTeam();
-
-		/*Unit golem = this.generator.GenerateUnit("Golem", "Unit1", 1, new Hexagon(0, 0, 0));
-		this.unit.Add(golem);
-		Unit golem2 = this.generator.GenerateUnit("Golem", "Unit2", 2, new Hexagon(-4, 3, 1));
-		this.unit.Add(golem2);*/
-
-		//At start game select first unit as a selected unit
-		/*this.selectedUnit = unit[0];
-		Color red = Color.red;
-		red.a = 0.5f;
-		this.unitsButton.transform.Find(this.selectedUnit.name).GetComponent<Image>().color = red;*/
 	}
 
 	// Update is called once per frame
