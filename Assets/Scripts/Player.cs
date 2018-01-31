@@ -5,12 +5,13 @@ using UnityEngine.Networking;
 
 public class Player : MonoBehaviour {
 
-	public int team;
+	public int team = 0;
 	public int connectionId;
+	public List<Unit> playerUnits;
 
 	// Use this for initialization
 	void Start () {
-
+		
 	}
 	
 	// Update is called once per frame

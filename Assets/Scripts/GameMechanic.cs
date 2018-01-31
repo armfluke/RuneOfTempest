@@ -9,14 +9,16 @@ using Newtonsoft.Json;
 
 public class GameMechanic : MonoBehaviour {
 
+	public const int MAX_PLAYER = 2;
+
 	public Cube cube = new Cube();
 	Generator generator;
 	//public GameObject map;
 	//Hexagon[] tiles;
 	//private List<GameObject> hilightTiles = new List<GameObject>();
-	public List<Unit> unit = new List<Unit>();
+	public List<Unit> unit;
 	public Unit selectedUnit; 
-	public GameObject unitsButton;
+	private GameObject unitsButton;
 	private TurnManager turnManager;
 	private Player player;
 	
@@ -43,12 +45,14 @@ public class GameMechanic : MonoBehaviour {
 
 		this.turnManager.currentTeamTurn = 1;
 		this.turnManager.time = 90f;
+		this.turnManager.turn = 1;
 
 
 	}
 
 	// Use this for initialization
 	void Start () {
+		this.unit = new List<Unit>();
 		//Get generator
 		this.generator = gameObject.GetComponent<Generator>();
 

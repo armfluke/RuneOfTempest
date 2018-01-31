@@ -6,14 +6,14 @@ using UnityEngine.UI;
 public class Command : MonoBehaviour {
 	public bool move = false;
 	public bool attack = false;
-	public bool defend = false;
 	public bool skill = false;
 	private GameMechanic gameMechanic;
 	private GameObject userInterface;
 	private MiniMap miniMap;
+	private Network network;
 
 	public void Select(){
-		if(this.gameMechanic.selectedUnit != null){
+		if(this.gameMechanic.selectedUnit != null && (this.gameMechanic.selectedUnit.state == "Idle" || this.gameMechanic.selectedUnit.state == "Move")){
 			this.userInterface.transform.Find("MainGame").gameObject.SetActive(false);
 			this.userInterface.transform.Find("UnitDetails").gameObject.SetActive(true);			
 		}
@@ -23,7 +23,6 @@ public class Command : MonoBehaviour {
 	public void Back(){
 		this.move = false;
 		this.attack = false;
-		this.defend = false;
 		this.skill = false;
 		this.userInterface.transform.Find("UnitDetails").gameObject.SetActive(false);
 		this.userInterface.transform.Find("MainGame").gameObject.SetActive(true);
@@ -46,7 +45,9 @@ public class Command : MonoBehaviour {
 	}
 
 	public void Defend(){
-
+		this.network.SendDefendCommandMessage(this.gameMechanic.selectedUnit);
+		this.userInterface.transform.Find("UnitDetails").gameObject.SetActive(false);
+		this.userInterface.transform.Find("MainGame").gameObject.SetActive(true);
 	}
 
 	public void Skill(){
@@ -58,6 +59,7 @@ public class Command : MonoBehaviour {
 		this.gameMechanic = gameObject.GetComponent<GameMechanic>();
 		this.miniMap = gameObject.GetComponent<MiniMap>();
 		this.userInterface = GameObject.Find("UserInterface");
+		this.network = GameObject.Find("NetworkManager").GetComponent<Network>();
 	}
 	
 	// Update is called once per frame

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
+using System.Collections.Generic;
 
 public class Network : MonoBehaviour {
     
@@ -9,17 +10,19 @@ public class Network : MonoBehaviour {
     const short MOVE = 1001;
     const short ATTACK = 1002;
     const short END_TURN = 1003;
+    const short DEFEND = 1004;
     private bool setting = true;
     public NetworkManager networkManager;
-    public GameObject gameMechanic;
+    //public GameObject gameMechanic;
     private Network network;
-    private Player player;
-    private TurnManager turnManager;
+    //private Player player;
+    //private TurnManager turnManager;
+    //GameObject mainGame;
     public int team = 1;
 
-    public void OnClientConnected(NetworkMessage msg){
+    /*public void OnClientConnected(NetworkMessage msg){
         RequestForTeam();
-    }
+    }*/
 
     public void RequestForTeam(){
         this.networkManager.client.Send(TEAM, new EmptyMessage());
@@ -29,15 +32,34 @@ public class Network : MonoBehaviour {
         TeamAssignMessage message = new TeamAssignMessage();
         message.team = this.team;
         this.team++;
-        if(this.team == 5){
+        if(this.team == GameMechanic.MAX_PLAYER + 1){
             this.team = 1;
         }
         NetworkServer.SendToClient(msg.conn.connectionId, TEAM, message);
     }
 
     public void OnClientTeamAssigntMessageReceived(NetworkMessage msg){
+        GameObject gameMechanic = GameObject.Find("GameMechanic");
+        Player player = GameObject.Find("Player").GetComponent<Player>();
+        TurnManager turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
+        GameObject mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
+
         TeamAssignMessage message = msg.ReadMessage<TeamAssignMessage>();
-        this.player.team = message.team;
+        player.team = message.team;
+
+        List<Unit> units = gameMechanic.GetComponent<GameMechanic>().unit;
+
+        foreach(Unit unit in units){
+            if(unit.team == player.team){
+                player.playerUnits.Add(unit);
+            }
+        }
+
+        if(turnManager.currentTeamTurn != player.team){
+			mainGame.SetActive(false);
+		}else{
+			mainGame.SetActive(true);
+		}
     }
 
     public void MoveUnit(Hexagon from, Hexagon to){
@@ -69,23 +91,29 @@ public class Network : MonoBehaviour {
     }
 
     public void OnClientMoveMessageReceived(NetworkMessage msg){
+        GameObject gameMechanic = GameObject.Find("GameMechanic");
+        
         MoveMessage message = msg.ReadMessage<MoveMessage>();
         
-        this.gameMechanic.GetComponent<MiniMap>().Move( 
+        gameMechanic.GetComponent<MiniMap>().Move( 
             new Hexagon((int)message.from.x, (int)message.from.y, (int)message.from.z), 
             new Hexagon((int)message.to.x, (int)message.to.y, (int)message.to.z));
     }
 
     public void OnClientTimerMessageReceived(NetworkMessage msg){
+        TurnManager turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
+
         TurnMessage message = msg.ReadMessage<TurnMessage>();
-        this.turnManager.time = message.time;
-        this.turnManager.currentTeamTurn = message.turn;
+        turnManager.time = message.time;
+        turnManager.currentTeamTurn = message.turn;
     }
 
     public void OnClientAttackMessageReceived(NetworkMessage msg){
+        GameObject gameMechanic = GameObject.Find("GameMechanic");
+
         MoveMessage message = msg.ReadMessage<MoveMessage>();
         
-        this.gameMechanic.GetComponent<MiniMap>().Attack(
+        gameMechanic.GetComponent<MiniMap>().Attack(
             new Hexagon((int)message.from.x, (int)message.from.y, (int)message.from.z), 
             new Hexagon((int)message.to.x, (int)message.to.y, (int)message.to.z));
     }
@@ -102,49 +130,94 @@ public class Network : MonoBehaviour {
     }
 
     public void OnServerEndTurnMessageReceived(NetworkMessage msg){
+        TurnManager turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
+
         TurnMessage message = new TurnMessage();
-        this.turnManager.time = TurnManager.TIME_PER_TURN;
-        this.turnManager.currentTeamTurn++;
-        if(this.turnManager.currentTeamTurn == 5){
-            this.turnManager.currentTeamTurn = 1;
+        turnManager.time = TurnManager.TIME_PER_TURN;
+        turnManager.currentTeamTurn++;
+        if(turnManager.currentTeamTurn == GameMechanic.MAX_PLAYER + 1){
+            turnManager.currentTeamTurn = 1;
         }
 
-        message.time = this.turnManager.time;
-        message.turn = this.turnManager.currentTeamTurn;
+        message.time = turnManager.time;
+        message.turn = turnManager.currentTeamTurn;
         NetworkServer.SendToAll(END_TURN, message);
     }
 
     public void OnClientEndTurnMessageReceived(NetworkMessage msg){
+        GameObject gameMechanic = GameObject.Find("GameMechanic");
+        Player player = GameObject.Find("Player").GetComponent<Player>();
+        TurnManager turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
+        GameObject mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
+
         TurnMessage message = msg.ReadMessage<TurnMessage>();
-        this.turnManager.time = message.time;
-        this.turnManager.currentTeamTurn = message.turn;
-        if(this.turnManager.currentTeamTurn == 1){
-            this.turnManager.turn++;
+        turnManager.time = message.time;
+        turnManager.currentTeamTurn = message.turn;
+        List<Unit> units = gameMechanic.GetComponent<GameMechanic>().unit;
+        foreach(Unit unit in units){
+            if(unit.team == turnManager.currentTeamTurn){
+                unit.state = "Idle";
+            }
         }
+
+        if(turnManager.currentTeamTurn == 1){
+            turnManager.turn++;
+        }
+        
+        //if not player turn disable game user interface of player
+        if(turnManager.currentTeamTurn != player.team){
+			mainGame.SetActive(false);
+		}else{
+			mainGame.SetActive(true);
+		}
+    }
+
+    public void SendDefendCommandMessage(Unit unit){
+        DefendCommandMessage msg = new DefendCommandMessage();
+        msg.name = unit.unitName;
+        msg.team = unit.team;
+        this.networkManager.client.Send(DEFEND, msg);
+    }
+
+    public void OnServerDefendCommandReceived(NetworkMessage msg){
+        DefendCommandMessage message = msg.ReadMessage<DefendCommandMessage>();
+        NetworkServer.SendToAll(DEFEND, message);
+    }
+
+    public void OnClientDefendCommandMessageReceived(NetworkMessage msg){
+        DefendCommandMessage message = msg.ReadMessage<DefendCommandMessage>();
+        Unit unit = GameObject.Find("Drivers").transform.Find(message.name).GetComponent<Unit>();
+        unit.Defend();
     }
 
     void Start(){
-        this.gameMechanic = GameObject.Find("GameMechanic");
+        //this.gameMechanic = GameObject.Find("GameMechanic");
         this.networkManager = gameObject.GetComponent<NetworkManager>();
-        this.player = GameObject.Find("Player").GetComponent<Player>();
-        this.turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
+        //this.player = GameObject.Find("Player").GetComponent<Player>();
+        //this.turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
+        //this.mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
         //Setting server handler
         NetworkServer.RegisterHandler(TEAM, OnServerTeamRequestMessageReceived);
         NetworkServer.RegisterHandler(MOVE, OnServerMoveMessageReceived);
         NetworkServer.RegisterHandler(ATTACK, OnServerAttackMessageReceived);
         NetworkServer.RegisterHandler(END_TURN, OnServerEndTurnMessageReceived);
+        NetworkServer.RegisterHandler(DEFEND, OnServerDefendCommandReceived);
     }
 
     void Update(){
         //Register client handler
-        if(this.networkManager.client != null && setting){
+        //Debug.Log(NetworkServer.connections.Count);
+        if(this.networkManager.client != null && this.networkManager.client.isConnected && setting){
             setting = false;
-            this.networkManager.client.RegisterHandler(MsgType.Connect, OnClientConnected);
+            //Debug.Log("Register Client Handler");
+            RequestForTeam();
+            //this.networkManager.client.RegisterHandler(MsgType.Connect, OnClientConnected);
             this.networkManager.client.RegisterHandler(TEAM, OnClientTeamAssigntMessageReceived);
             this.networkManager.client.RegisterHandler(MOVE, OnClientMoveMessageReceived);
             this.networkManager.client.RegisterHandler(ATTACK, OnClientAttackMessageReceived);
             this.networkManager.client.RegisterHandler(TIMER, OnClientTimerMessageReceived);
             this.networkManager.client.RegisterHandler(END_TURN, OnClientEndTurnMessageReceived);
+            this.networkManager.client.RegisterHandler(DEFEND, OnClientDefendCommandMessageReceived);
         }
 
     }
@@ -185,4 +258,9 @@ public class TurnMessage: MessageBase {
     public float time;
     //current team turn
     public int turn;
+}
+
+public class DefendCommandMessage: MessageBase {
+    public string name;
+    public int team;
 }

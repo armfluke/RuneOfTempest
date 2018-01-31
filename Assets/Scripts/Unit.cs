@@ -10,7 +10,7 @@ public class Unit : MonoBehaviour {
 	public int team;
 	public int hp;
 	public Status status;
-	public string state;
+	public string state = "Idle";
 	Hexagon hexagon;
 	Vector3 targetPosition;
 	RaycastHit hitInfo;
@@ -34,6 +34,8 @@ public class Unit : MonoBehaviour {
 	}
 
 	public void Move(Hexagon target){
+		this.state  = "Move";
+
 		this.position = target;
 		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.x + "," + target.y + "," + target.z)
 							.position + new Vector3(0, 0.5f, 0);
@@ -66,6 +68,8 @@ public class Unit : MonoBehaviour {
 	}
 
 	public void Attack(Unit target){
+		this.state = "Attack";
+
 		this.animator.SetTrigger("Attack");
 		this.attacking = true;
 
@@ -98,6 +102,11 @@ public class Unit : MonoBehaviour {
 		if(frameAttacking <= 15){
 			transform.Rotate(Vector3.up * this.diffAngle, Space.Self);
 		}
+	}
+
+	public void Defend(){
+		this.state = "Defend";
+		Debug.Log(this.unitName + " Defend");
 	}
 
 	// Use this for initialization

@@ -14,15 +14,19 @@ public class TurnManager : MonoBehaviour {
 	public Text turnText;
 	public Text timeText;
 	private Network network;
+	private Player player;
+	private GameObject mainGame;
+
 
 	public void EndTurn(){
 		this.network.SendEndTurnMessage();
-		
 	}
 
 	// Use this for initialization
 	void Start () {
 		this.network = GameObject.Find("NetworkManager").GetComponent<Network>();
+		this.player = GameObject.Find("Player").GetComponent<Player>();
+		this.mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
 
 		this.time = TIME_PER_TURN;
 	}
@@ -39,5 +43,6 @@ public class TurnManager : MonoBehaviour {
 		if(time <= 0){
 			EndTurn();
 		}
+
 	}
 }

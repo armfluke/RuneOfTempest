@@ -8,7 +8,6 @@ using Newtonsoft.Json;
 
 public class Generator : MonoBehaviour {
 
-	private GameMechanic gameMechanic;
 	private Player player;
 	private int countTeam = 0;
 
@@ -47,25 +46,14 @@ public class Generator : MonoBehaviour {
 	public Unit GenerateUnit(string unitType, string unitName, int team, Hexagon position){
 		Vector3 origin = new Vector3(0, 0, 0);	//Default location if unit is not found
 
-		//Instantiate gameobject to hold character and transform it under correct hierachy 
-		/*GameObject characterObject = new GameObject();
-		characterObject.name = unitName;
-		MarkerTransformDriver marker = characterObject.AddComponent<MarkerTransformDriver>();
-		//Add marker id
-		marker._expectedId = unitName;
-		characterObject.transform.parent = GameObject.Find("Drivers").transform;*/
-
 		//Get position of tile to instantiate unit
 		origin = GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
 				.position + new Vector3(0, 0.5f, 0);
 
 		GameObject unit = (GameObject)Resources.Load("Prefabs/" + unitType, typeof(GameObject));
 		unit = (GameObject)Instantiate(unit, origin, Quaternion.Euler(new Vector3(0, 0, 0)));
-		/*unit = (GameObject)Instantiate(unit, origin, Quaternion.identity);
-		unit.transform.LookAt(GameObject.Find("Main Camera").transform);*/
 		unit.name = unitName;
 		unit.transform.parent = GameObject.Find("Drivers").transform;
-		//unit.transform.parent = characterObject.transform;
 
 		//Add detail of unit
 		Unit unitDetails = unit.AddComponent<Unit>();
@@ -74,9 +62,9 @@ public class Generator : MonoBehaviour {
 		unitDetails.team = team;
 		unitDetails.status = gameObject.GetComponent<Database>().unitStatus[unitType];
 		unitDetails.hp = unitDetails.status.maxHp;
-		//TODO: Add state of unit
 
 		GenerateImage(unitType, unitName, position);
+
 		return unitDetails;
 	}
 
@@ -96,10 +84,12 @@ public class Generator : MonoBehaviour {
 	}
 
 	public void GenerateUnitForEachTeam(){
+		GameMechanic gameMechanic = gameObject.GetComponent<GameMechanic>();
 		for(int i = 0; i < positionForEachTeam.Length; i++){
 			int index = 0;
 			foreach(Hexagon position in positionForEachTeam[i]){
-				this.gameMechanic.unit.Add(GenerateUnit("Golem", "Unit" + (index+1) + " Team" + (i+1), (i+1), position));
+				Unit unit = GenerateUnit("Golem", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
+				gameMechanic.unit.Add(unit);
 				index++;
 			}
 		}
@@ -113,13 +103,12 @@ public class Generator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		this.gameMechanic = gameObject.GetComponent<GameMechanic>();
 		this.player = GameObject.Find("Player").GetComponent<Player>();
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(NetworkServer.connections.Count);
+		
 	}
 }
