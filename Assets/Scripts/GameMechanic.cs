@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 public class GameMechanic : MonoBehaviour {
 
-	public const int MAX_PLAYER = 1;
+	public const int MAX_PLAYER = 2;
 
 	public Cube cube = new Cube();
 	Generator generator;
@@ -18,13 +18,15 @@ public class GameMechanic : MonoBehaviour {
 	//private List<GameObject> hilightTiles = new List<GameObject>();
 	public List<Unit> unit;
 	public Unit selectedUnit; 
-	private GameObject unitsButton;
+	public GameObject unitsButton;
 	private TurnManager turnManager;
 	private Player player;
+	public GameObject pointer;
+	public GameObject map;
 	
 	public void OnCharacterSelected(){
 		Color white = Color.white;
-		white.a = 0.5f;
+		white.a = 0.75f;
 		Color red = Color.red;
 		red.a = 0.5f;
 		//Debug.Log(EventSystem.current.currentSelectedGameObject.name);
@@ -39,9 +41,12 @@ public class GameMechanic : MonoBehaviour {
 		foreach(Unit unit in this.unit){
 			if(unit.unitName == EventSystem.current.currentSelectedGameObject.name + " Team" + this.player.team){
 				this.selectedUnit = unit;
+				/*this.pointer.transform.position = selectedUnit.transform.position + new Vector3(0, 5.5f, 0);
+				this.pointer.SetActive(true);*/
 				break;
 			}else{
 				this.selectedUnit = null;
+				//this.pointer.SetActive(false);
 			}
 		}
 		//this.selectedUnit = GameObject.Find("Drivers").transform.Find(EventSystem.current.currentSelectedGameObject.name + " Team" + this.player.team).GetComponent<Unit>();
@@ -60,12 +65,12 @@ public class GameMechanic : MonoBehaviour {
 		this.unit = new List<Unit>();
 		//Get generator
 		this.generator = gameObject.GetComponent<Generator>();
-
 		this.unitsButton = GameObject.Find("UserInterface").transform.Find("MainGame").Find("Units").gameObject;
-
 		this.turnManager = gameObject.GetComponent<TurnManager>();
-
 		this.player = GameObject.Find("Player").GetComponent<Player>();
+		/*this.pointer = GameObject.Find("Pointer");
+		this.map = GameObject.Find("Drivers").transform.Find("Map").gameObject;*/
+
 
 		this.gameObject.GetComponent<Database>().ReadUnitStatus();
 
@@ -76,6 +81,12 @@ public class GameMechanic : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update(){
-
+		if(this.selectedUnit != null){
+			this.pointer.transform.position = this.selectedUnit.transform.position + new Vector3(0, 5.5f, 0);
+			this.pointer.transform.rotation = this.selectedUnit.transform.rotation;
+			this.pointer.SetActive(true);
+		}else{
+			this.pointer.SetActive(false);
+		}
 	}
 }

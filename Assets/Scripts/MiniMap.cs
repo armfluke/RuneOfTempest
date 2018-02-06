@@ -23,8 +23,10 @@ public class MiniMap : MonoBehaviour {
 		//TODO: reset all command when back
 		if(this.command.move){
 			ResetMiniMapHilightForMoving();
+			this.command.move = false;
 		}else if(this.command.attack){
 			ResetMiniMapHilightForAttacking();
+			this.command.attack = false;
 		}
 	}
 
@@ -52,7 +54,7 @@ public class MiniMap : MonoBehaviour {
 			range = this.gameMechanic.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.move);
 			checkRange = CheckRange(range);
 			
-			if(checkRange && !unitChecking(this.hexagon)){
+			if(checkRange && !UnitChecking(this.hexagon)){
 				ResetMiniMapHilightForMoving();
 				this.miniMap.SetActive(false);
 				this.mainGame.SetActive(true);
@@ -66,7 +68,8 @@ public class MiniMap : MonoBehaviour {
 			checkRange = CheckRange(range);
 
 			Unit targetUnit = SearchUnit(this.hexagon);
-			if(targetUnit && checkRange && targetUnit.team != this.selectedUnit.team/*targetUnit != this.selectedUnit*/){
+			if(targetUnit && checkRange && targetUnit.team != this.selectedUnit.team){
+				ResetMiniMapHilightForAttacking();
 				Debug.Log("Attack "+targetUnit.name);
 				this.miniMap.SetActive(false);
 				this.mainGame.SetActive(true);
@@ -84,7 +87,7 @@ public class MiniMap : MonoBehaviour {
 		}
 	}
 
-	private bool unitChecking(Hexagon hexagon){
+	private bool UnitChecking(Hexagon hexagon){
 		foreach(Unit unit in this.gameMechanic.unit){
 			if(unit.position.x == hexagon.x && unit.position.y == hexagon.y && unit.position.z == hexagon.z){
 				return true;
@@ -135,7 +138,7 @@ public class MiniMap : MonoBehaviour {
 							.Find(unit.name).transform;
 
 		Transform targetTile = miniMap.transform.Find(to.x + "," + to.y + "," + to.z);
-		unitImage.parent = targetTile.transform;
+		unitImage.SetParent(targetTile.transform);
 		unitImage.GetComponent<RectTransform>().position = targetTile.GetComponent<RectTransform>().position;
 
 		unit.Move(to);

@@ -44,19 +44,58 @@ public class Generator : MonoBehaviour {
 
 	//Generate unit
 	public Unit GenerateUnit(string unitType, string unitName, int team, Hexagon position){
-		Vector3 origin = new Vector3(0, 0, 0);	//Default location if unit is not found
+		Vector3 origin = Vector3.zero;	//Default location if unit is not found
 
 		//Get position of tile to instantiate unit
 		origin = GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
 				.position + new Vector3(0, 0.5f, 0);
 
+		//Create an object to hold unit and health
+		GameObject unitObject = new GameObject();
+		unitObject.name = unitName;
+		unitObject.transform.position = origin;
+		unitObject.transform.SetParent(GameObject.Find("Drivers").transform);
+
+		//Create unit
 		GameObject unit = (GameObject)Resources.Load("Prefabs/" + unitType, typeof(GameObject));
-		unit = (GameObject)Instantiate(unit, origin, Quaternion.Euler(new Vector3(0, 0, 0)));
+		unit = (GameObject)Instantiate(unit, origin, Quaternion.Euler(Vector3.zero));
 		unit.name = unitName;
-		unit.transform.parent = GameObject.Find("Drivers").transform;
+		unit.transform.SetParent(unitObject.transform);
+
+		//Create health bar
+		GameObject health = (GameObject)Resources.Load("Prefabs/Health");
+		health = (GameObject)Instantiate(health, origin, Quaternion.Euler(Vector3.zero));
+		health.name = "Health";
+		health.GetComponent<RectTransform>().position = unit.transform.position + new Vector3(0, 5, 0);
+		health.transform.SetParent(unitObject.transform);
+
+		Image healthColor = health.transform.Find("Background").Find("Foreground").GetComponent<Image>();
+		Color green = Color.green;
+		Color blue = Color.cyan;
+		Color yellow = Color.yellow;
+		Color magenta = Color.magenta;
+		Color white = Color.white;
+		//Change color of health bar depending on team
+		switch(team){
+			case 1:
+				healthColor.color = green;
+				break;
+			case 2:
+				healthColor.color = blue;
+				break;
+			case 3:
+				healthColor.color = yellow;
+				break;
+			case 4:
+				healthColor.color = magenta;
+				break;
+			default:
+				healthColor.color = white;
+				break;
+		}
 
 		//Add detail of unit
-		Unit unitDetails = unit.AddComponent<Unit>();
+		Unit unitDetails = unitObject.AddComponent<Unit>();
 		unitDetails.unitName = unitName;
 		unitDetails.position = position;
 		unitDetails.team = team;

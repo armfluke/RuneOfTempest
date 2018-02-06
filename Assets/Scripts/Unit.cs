@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class Unit : MonoBehaviour {
 	
@@ -20,8 +21,12 @@ public class Unit : MonoBehaviour {
 	private int frameMoving;
 	private int frameAttacking;
 	float diffAngle;
+	public RectTransform healthBar;
+	public Text healthText;
+	public GameMechanic gameMechanic;
+	public Player player;
 
-	public float calculateDifferentAngle(){
+	public float CalculateDifferentAngle(){
 		//Calculate rotation angle
 		Vector3 targetDir = this.targetPosition - transform.position;
         //  Acute angle [0,180]
@@ -37,12 +42,13 @@ public class Unit : MonoBehaviour {
 		this.state  = "Move";
 
 		this.position = target;
-		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.x + "," + target.y + "," + target.z)
+
+		this.targetPosition = GameObject.Find("GameMechanic").GetComponent<GameMechanic>().map.transform.Find(target.x + "," + target.y + "," + target.z)
 							.position + new Vector3(0, 0.5f, 0);
 		
 		this.different = (this.targetPosition - transform.position) / 45;
 		
-		this.diffAngle = calculateDifferentAngle() / 15;
+		this.diffAngle = CalculateDifferentAngle() / 15;
 		
 		this.frameMoving = 0;
 		
@@ -73,8 +79,8 @@ public class Unit : MonoBehaviour {
 		this.animator.SetTrigger("Attack");
 		this.attacking = true;
 
-		this.targetPosition = GameObject.Find("Drivers").transform.Find("Map").Find(target.position.x + "," + target.position.y + "," + target.position.z).position;
-		this.diffAngle = calculateDifferentAngle() / 15;
+		this.targetPosition = GameObject.Find("GameMechanic").GetComponent<GameMechanic>().map.transform.Find(target.position.x + "," + target.position.y + "," + target.position.z).position;
+		this.diffAngle = CalculateDifferentAngle() / 15;
 
 		this.frameAttacking = 0;
 
@@ -92,8 +98,29 @@ public class Unit : MonoBehaviour {
 		//Wait For seconds
 		yield return new WaitForSeconds(time);
 		// Code to execute after the delay
+		int index = 0;
+			if(this.team == this.player.team){
+				foreach(Unit unit in this.player.playerUnits){
+					if(unit.unitName == this.unitName){
+						this.player.playerUnits.RemoveAt(index);
+						break;
+					}
+					index++;
+				}
+			}
+
+			index = 0;
+			foreach(Unit unit in this.gameMechanic.unit){
+				if(unit.unitName == this.unitName){
+					this.gameMechanic.unit.RemoveAt(index);
+					break;
+				}
+				index++;
+			}
+
+			Destroy(gameObject);
+
 		isCoroutineExecuting = false;
-		this.attacking = false;
 	}
 	//StartCoroutine(ExecuteAfterTime(3f));
 
@@ -109,18 +136,70 @@ public class Unit : MonoBehaviour {
 		Debug.Log(this.unitName + " Defend");
 	}
 
+	IEnumerator DelayBeforeDie(float time){
+		//Check if coroutine is already execute
+		if(isCoroutineExecuting){
+			yield break;
+		}
+		isCoroutineExecuting = true;
+		//Wait For seconds
+		yield return new WaitForSeconds(time);
+		// Code to execute after the delay
+		GameObject miniMap = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").gameObject;
+		GameObject unitImage = miniMap.transform.Find(position.x+","+position.y+","+position.z).Find(this.unitName).gameObject;
+		Destroy(unitImage);
+
+		int index = 0;
+		if(this.team == this.player.team){
+			foreach(Unit unit in this.player.playerUnits){
+				if(unit.unitName == this.unitName){
+					this.player.playerUnits.RemoveAt(index);
+					break;
+				}
+				index++;
+			}
+		}
+
+		index = 0;
+		foreach(Unit unit in this.gameMechanic.unit){
+			if(unit.unitName == this.unitName){
+				this.gameMechanic.unit.RemoveAt(index);
+				break;
+			}
+			index++;
+		}
+
+		Destroy(gameObject);
+
+		isCoroutineExecuting = false;
+	}
+
 	// Use this for initialization
 	void Start () {
-		this.animator = transform.gameObject.GetComponent<Animator>();
+		this.gameMechanic = GameObject.Find("GameMechanic").GetComponent<GameMechanic>();
+		this.player = GameObject.Find("Player").GetComponent<Player>();
+		this.animator = transform.Find(this.unitName).GetComponent<Animator>();
+		this.healthBar = transform.Find("Health").Find("Background").Find("Foreground").GetComponent<RectTransform>();
+		this.healthText = transform.Find("Health").Find("Text").GetComponent<Text>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		//Adjust health of unit
+		this.healthBar.sizeDelta = new Vector2(((float)this.hp / (float)this.status.maxHp) * 100, this.healthBar.sizeDelta.y);
+		this.healthText.text = this.hp + " / " + this.status.maxHp;
 
 		//Moving unit
 		Moving();
 		//Attacking unit
 		Attacking();
+
+		if(this.hp <= 0){
+			this.hp = 0;
+			this.animator.SetTrigger("Die");
+			StartCoroutine(DelayBeforeDie(4f));
+			Debug.Log(this.unitName + " died");
+		}
 
 		//Using raycast to detect character position
 		//Shoot raycast to downward

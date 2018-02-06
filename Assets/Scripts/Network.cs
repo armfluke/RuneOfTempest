@@ -2,6 +2,7 @@
 using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Network : MonoBehaviour {
     
@@ -11,6 +12,7 @@ public class Network : MonoBehaviour {
     const short ATTACK = 1002;
     const short END_TURN = 1003;
     const short DEFEND = 1004;
+    const short LOSE = 1005;
     private bool setting = true;
     public NetworkManager networkManager;
     //public GameObject gameMechanic;
@@ -46,6 +48,16 @@ public class Network : MonoBehaviour {
 
         TeamAssignMessage message = msg.ReadMessage<TeamAssignMessage>();
         player.team = message.team;
+        //Assign castle positon for each player team
+        if(player.team == 1){
+            player.castlePosition = new Hexagon(-7, 0, 7);
+        }else if(player.team == 2){
+            player.castlePosition = new Hexagon(0, -7, 7);
+        }else if(player.team == 3){
+            player.castlePosition = new Hexagon(7, 0, -7);
+        }else if(player.team == 4){
+            player.castlePosition = new Hexagon(0, 7, -7);
+        }
 
         List<Unit> units = gameMechanic.GetComponent<GameMechanic>().unit;
 
@@ -137,6 +149,8 @@ public class Network : MonoBehaviour {
         turnManager.currentTeamTurn++;
         if(turnManager.currentTeamTurn == GameMechanic.MAX_PLAYER + 1){
             turnManager.currentTeamTurn = 1;
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //Check position
         }
 
         message.time = turnManager.time;
@@ -153,6 +167,15 @@ public class Network : MonoBehaviour {
         TurnMessage message = msg.ReadMessage<TurnMessage>();
         turnManager.time = message.time;
         turnManager.currentTeamTurn = message.turn;
+
+        Color white = Color.white;
+		white.a = 0.75f;
+        GameMechanic mechanic = gameMechanic.GetComponent<GameMechanic>();
+        if(mechanic.selectedUnit != null){
+            mechanic.unitsButton.transform.Find(mechanic.selectedUnit.name.Split(' ')[0]).GetComponent<Image>().color = white;
+            mechanic.selectedUnit = null;
+        }
+        
         List<Unit> units = gameMechanic.GetComponent<GameMechanic>().unit;
         foreach(Unit unit in units){
             if(unit.team == turnManager.currentTeamTurn){
@@ -190,6 +213,27 @@ public class Network : MonoBehaviour {
         unit.Defend();
     }
 
+    public void SendLoseStatusMessage(int team){
+        LoseStatusMessage msg = new LoseStatusMessage();
+        msg.team = team;
+        this.networkManager.client.Send(LOSE, msg);
+    }
+
+    public void OnServerLoseStatusMessageReceived(NetworkMessage msg){
+        LoseStatusMessage message = msg.ReadMessage<LoseStatusMessage>();
+        NetworkServer.SendToAll(LOSE, message);
+    }
+
+    public void OnClientLoseStatusMessageReceived(NetworkMessage msg){
+        GameMechanic gameMechanic = GameObject.Find("GameMechanic").GetComponent<GameMechanic>();
+        LoseStatusMessage message = msg.ReadMessage<LoseStatusMessage>();
+        for(int i = 0; i < gameMechanic.unit.Count; i++){
+            if(gameMechanic.unit[i].team == message.team){
+                gameMechanic.unit[i].hp = 0;
+            }
+        }
+    }
+
     void Start(){
         //this.gameMechanic = GameObject.Find("GameMechanic");
         this.networkManager = gameObject.GetComponent<NetworkManager>();
@@ -202,6 +246,7 @@ public class Network : MonoBehaviour {
         NetworkServer.RegisterHandler(ATTACK, OnServerAttackMessageReceived);
         NetworkServer.RegisterHandler(END_TURN, OnServerEndTurnMessageReceived);
         NetworkServer.RegisterHandler(DEFEND, OnServerDefendCommandReceived);
+        NetworkServer.RegisterHandler(LOSE, OnServerLoseStatusMessageReceived);
     }
 
     void Update(){
@@ -218,6 +263,7 @@ public class Network : MonoBehaviour {
             this.networkManager.client.RegisterHandler(TIMER, OnClientTimerMessageReceived);
             this.networkManager.client.RegisterHandler(END_TURN, OnClientEndTurnMessageReceived);
             this.networkManager.client.RegisterHandler(DEFEND, OnClientDefendCommandMessageReceived);
+            this.networkManager.client.RegisterHandler(LOSE, OnClientLoseStatusMessageReceived);
         }
 
     }
@@ -230,8 +276,8 @@ public class Network : MonoBehaviour {
     // }
 }
 
-public class TeamRequestMessage: MessageBase {
-
+public class LoseStatusMessage: MessageBase {
+    public int team;
 }
 
 public class TeamAssignMessage: MessageBase {

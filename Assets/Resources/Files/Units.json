@@ -2,7 +2,7 @@
     "Golem": {
         "type": "Golem",
         "hp": 20,
-        "attack": 2,
+        "attack": 21,
         "range": 1,
         "move": 2,
         "cost": 5,
