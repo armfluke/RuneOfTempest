@@ -67,7 +67,6 @@ public class WinCondition : MonoBehaviour {
 					index++;
 				}
 			}
-			Debug.Log("4");
 			for(int i=0; i < this.checkCastleConquer.Length; i++){
 				if(checkCastleConquer[i] == false){
 					castleConquerCount[i] = 0;
