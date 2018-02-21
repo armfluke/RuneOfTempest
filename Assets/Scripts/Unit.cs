@@ -25,6 +25,7 @@ public class Unit : MonoBehaviour {
 	public Text healthText;
 	public GameMechanic gameMechanic;
 	public Player player;
+	public Dictionary<string ,GameObject> unitState = new Dictionary<string, GameObject>();
 
 	public float CalculateDifferentAngle(){
 		//Calculate rotation angle
@@ -181,6 +182,16 @@ public class Unit : MonoBehaviour {
 		this.animator = transform.Find(this.unitName).GetComponent<Animator>();
 		this.healthBar = transform.Find("Health").Find("Background").Find("Foreground").GetComponent<RectTransform>();
 		this.healthText = transform.Find("Health").Find("Text").GetComponent<Text>();
+
+		Transform stateObject = transform.Find("Health").Find("State");
+		//Get each game object state
+		this.unitState["Idle"] = stateObject.Find("Idle").gameObject;
+		this.unitState["Move"] = stateObject.Find("Move").gameObject;
+		this.unitState["Attack"] = stateObject.Find("Attack").gameObject;
+		this.unitState["Defend"] = stateObject.Find("Defend").gameObject;
+		this.unitState["Skill"] = stateObject.Find("Skill").gameObject;
+		this.unitState["Rest"] = stateObject.Find("Rest").gameObject;
+		this.unitState["Die"] = stateObject.Find("Die").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -199,6 +210,14 @@ public class Unit : MonoBehaviour {
 			this.animator.SetTrigger("Die");
 			StartCoroutine(DelayBeforeDie(4f));
 			Debug.Log(this.unitName + " died");
+		}
+
+		foreach(KeyValuePair<string, GameObject> entry in this.unitState){
+			if(entry.Value.name == this.state){
+				entry.Value.SetActive(true);
+			}else{
+				entry.Value.SetActive(false);
+			}
 		}
 
 		//Using raycast to detect character position

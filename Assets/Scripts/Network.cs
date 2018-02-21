@@ -149,8 +149,7 @@ public class Network : MonoBehaviour {
         turnManager.currentTeamTurn++;
         if(turnManager.currentTeamTurn == GameMechanic.MAX_PLAYER + 1){
             turnManager.currentTeamTurn = 1;
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //Check position
+            
         }
 
         message.time = turnManager.time;
@@ -169,7 +168,7 @@ public class Network : MonoBehaviour {
         turnManager.currentTeamTurn = message.turn;
 
         Color white = Color.white;
-		white.a = 0.75f;
+		white.a = 0.5f;
         GameMechanic mechanic = gameMechanic.GetComponent<GameMechanic>();
         if(mechanic.selectedUnit != null){
             mechanic.unitsButton.transform.Find(mechanic.selectedUnit.name.Split(' ')[0]).GetComponent<Image>().color = white;
@@ -192,7 +191,7 @@ public class Network : MonoBehaviour {
 			mainGame.SetActive(false);
 		}else{
 			mainGame.SetActive(true);
-		}
+        }
     }
 
     public void SendDefendCommandMessage(Unit unit){
@@ -226,12 +225,15 @@ public class Network : MonoBehaviour {
 
     public void OnClientLoseStatusMessageReceived(NetworkMessage msg){
         GameMechanic gameMechanic = GameObject.Find("GameMechanic").GetComponent<GameMechanic>();
+        WinCondition winCondition = GameObject.Find("GameMechanic").GetComponent<WinCondition>();
         LoseStatusMessage message = msg.ReadMessage<LoseStatusMessage>();
         for(int i = 0; i < gameMechanic.unit.Count; i++){
             if(gameMechanic.unit[i].team == message.team){
                 gameMechanic.unit[i].hp = 0;
             }
         }
+
+        winCondition.playerLoseStatus[message.team - 1] = true;
     }
 
     void Start(){

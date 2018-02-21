@@ -56,6 +56,7 @@ public class JoinGame : MonoBehaviour {
         {
             GameObject _roomListItemGo = Instantiate(roomListItemPrefab);
             _roomListItemGo.transform.SetParent(roomListParent);
+            _roomListItemGo.transform.localScale = new Vector3(1, 1, 1);
 
             RoomListItem _roomListItem = _roomListItemGo.GetComponent<RoomListItem>();
             if (_roomListItem != null)
@@ -85,6 +86,7 @@ public class JoinGame : MonoBehaviour {
     public void JoinRoom(MatchInfoSnapshot _match)
     {
         Debug.Log("Joining " + _match.name);
+        networkManager.StartMatchMaker();
         networkManager.matchMaker.JoinMatch(_match.networkId, "", "", "", 0, 0,networkManager.OnMatchJoined);
         ClearRoomList();
         //DeleteCurrentCanvas();

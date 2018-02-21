@@ -44,5 +44,9 @@ public class TurnManager : MonoBehaviour {
 			EndTurn();
 		}
 
+		if(this.player.status == "Lose" && this.player.team == this.currentTeamTurn){
+			EndTurn();
+		}
+
 	}
 }

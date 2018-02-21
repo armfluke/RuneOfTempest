@@ -12,11 +12,13 @@ public class Player : MonoBehaviour {
 	private bool checkLose = false;
 	public GameMechanic gameMechanic;
 	public Network network;
+	public GameObject mainGame;
 
 	// Use this for initialization
 	void Start () {
 		this.gameMechanic = GameObject.Find("GameMechanic").GetComponent<GameMechanic>();
 		this.network = GameObject.Find("NetworkManager").GetComponent<Network>();
+		this.mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -30,6 +32,9 @@ public class Player : MonoBehaviour {
 			this.network.SendLoseStatusMessage(this.team);
 			//TODO: Add all player unit hp to 0 disable userinterface show lose and back button
 			//maybe send status to server
+			if(this.status == "Lose"){
+				this.mainGame.SetActive(false);
+			}
 		}
 	}
 

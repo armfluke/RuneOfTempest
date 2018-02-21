@@ -26,7 +26,7 @@ public class GameMechanic : MonoBehaviour {
 	
 	public void OnCharacterSelected(){
 		Color white = Color.white;
-		white.a = 0.75f;
+		white.a = 0.5f;
 		Color red = Color.red;
 		red.a = 0.5f;
 		//Debug.Log(EventSystem.current.currentSelectedGameObject.name);

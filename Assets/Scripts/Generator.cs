@@ -94,6 +94,13 @@ public class Generator : MonoBehaviour {
 				break;
 		}
 
+		//Add state sign to unit
+		GameObject state = (GameObject)Resources.Load("Prefabs/State");
+		state = (GameObject)Instantiate(state, origin, Quaternion.Euler(Vector3.zero));
+		state.name = "State";
+		state.GetComponent<RectTransform>().position = health.GetComponent<RectTransform>().position + new Vector3(-1.5f, 0, 0);
+		state.transform.SetParent(health.transform);
+
 		//Add detail of unit
 		Unit unitDetails = unitObject.AddComponent<Unit>();
 		unitDetails.unitName = unitName;
@@ -102,12 +109,13 @@ public class Generator : MonoBehaviour {
 		unitDetails.status = gameObject.GetComponent<Database>().unitStatus[unitType];
 		unitDetails.hp = unitDetails.status.maxHp;
 
-		GenerateImage(unitType, unitName, position);
+		GenerateImage(unitType, unitName, team, position);
 
 		return unitDetails;
 	}
 
-	public Image GenerateImage(String imageName, String name, Hexagon position){
+	public void GenerateImage(String imageName, String name, int team, Hexagon position){
+		//Create unit image on minimap
 		GameObject miniMap = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").gameObject;
 		Sprite sprite = Resources.Load<Sprite>("Images/" + imageName);
 		GameObject imageObject = new GameObject();
@@ -119,14 +127,57 @@ public class Generator : MonoBehaviour {
 		imageObject.transform.SetParent(tile);
 		imageObject.GetComponent<RectTransform>().position = tile.GetComponent<RectTransform>().position;
 		imageObject.transform.localScale = new Vector3(1, 1, 1);
-		return image;
+		
+		//Create diamonds to identify team on minimap
+		sprite = Resources.Load<Sprite>("Images/Diamond");
+		GameObject diamondObject = new GameObject();
+		diamondObject.name = "Team";
+		image = diamondObject.AddComponent<Image>();
+		image.raycastTarget = false;
+		image.sprite = sprite;
+		diamondObject.transform.SetParent(imageObject.transform);
+		diamondObject.GetComponent<RectTransform>().sizeDelta = new Vector2(30, 30);
+		diamondObject.GetComponent<RectTransform>().position = imageObject.GetComponent<RectTransform>().position + new Vector3(0, -9.5f, 0);
+		diamondObject.transform.localScale = new Vector3(1, 1, 1);
+
+
+		Color green = Color.green;
+		Color blue = Color.cyan;
+		Color yellow = Color.yellow;
+		Color magenta = Color.magenta;
+		Color white = Color.white;
+		//Change color of diamond depending on team
+		switch(team){
+			case 1:
+				image.color = green;
+				break;
+			case 2:
+				image.color = blue;
+				break;
+			case 3:
+				image.color = yellow;
+				break;
+			case 4:
+				image.color = magenta;
+				break;
+			default:
+				image.color = white;
+				break;
+		}
 	}
 
 	public void GenerateUnitForEachTeam(){
 		GameMechanic gameMechanic = gameObject.GetComponent<GameMechanic>();
-		for(int i = 0; i < positionForEachTeam.Length; i++){
+		for(int i = 0; i < GameMechanic.MAX_PLAYER; i++){
 			int index = 0;
 			foreach(Hexagon position in positionForEachTeam[i]){
+
+				/* */
+				if(index >= 1){
+					break;
+				}
+				/* */
+				
 				Unit unit = GenerateUnit("Golem", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
 				gameMechanic.unit.Add(unit);
 				index++;
