@@ -54,6 +54,10 @@ public class Command : MonoBehaviour {
 
 	}
 
+	public void Class(){
+		
+	}
+
 	// Use this for initialization
 	void Start () {
 		this.gameMechanic = gameObject.GetComponent<GameMechanic>();

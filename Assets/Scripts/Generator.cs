@@ -44,6 +44,7 @@ public class Generator : MonoBehaviour {
 
 	//Generate unit
 	public Unit GenerateUnit(string unitType, string unitName, int team, Hexagon position){
+		GameMechanic gameMechanic = gameObject.GetComponent<GameMechanic>();
 		Vector3 origin = Vector3.zero;	//Default location if unit is not found
 
 		//Get position of tile to instantiate unit
@@ -111,6 +112,8 @@ public class Generator : MonoBehaviour {
 
 		GenerateImage(unitType, unitName, team, position);
 
+		gameMechanic.unit.Add(unitDetails);
+
 		return unitDetails;
 	}
 
@@ -167,19 +170,17 @@ public class Generator : MonoBehaviour {
 	}
 
 	public void GenerateUnitForEachTeam(){
-		GameMechanic gameMechanic = gameObject.GetComponent<GameMechanic>();
 		for(int i = 0; i < GameMechanic.MAX_PLAYER; i++){
 			int index = 0;
 			foreach(Hexagon position in positionForEachTeam[i]){
 
 				/* */
-				if(index >= 1){
+				/*if(index >= 1){
 					break;
-				}
+				}*/
 				/* */
 				
 				Unit unit = GenerateUnit("Golem", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
-				gameMechanic.unit.Add(unit);
 				index++;
 			}
 		}

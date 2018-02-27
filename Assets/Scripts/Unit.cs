@@ -12,9 +12,8 @@ public class Unit : MonoBehaviour {
 	public int hp;
 	public Status status;
 	public string state = "Idle";
-	Hexagon hexagon;
 	Vector3 targetPosition;
-	RaycastHit hitInfo;
+	//RaycastHit hitInfo;
 	bool attacking = false;
 	Animator animator;
 	Vector3 different;
@@ -86,11 +85,10 @@ public class Unit : MonoBehaviour {
 		this.frameAttacking = 0;
 
 		target.hp -= this.status.attack;
-		//Checking if unit died
 	}
 
 	private bool isCoroutineExecuting = false;
-	IEnumerator ExecuteAfterTime(float time){
+	/*IEnumerator ExecuteAfterTime(float time){
 		//Check if coroutine is already execute
 		if(isCoroutineExecuting){
 			yield break;
@@ -99,32 +97,10 @@ public class Unit : MonoBehaviour {
 		//Wait For seconds
 		yield return new WaitForSeconds(time);
 		// Code to execute after the delay
-		int index = 0;
-			if(this.team == this.player.team){
-				foreach(Unit unit in this.player.playerUnits){
-					if(unit.unitName == this.unitName){
-						this.player.playerUnits.RemoveAt(index);
-						break;
-					}
-					index++;
-				}
-			}
-
-			index = 0;
-			foreach(Unit unit in this.gameMechanic.unit){
-				if(unit.unitName == this.unitName){
-					this.gameMechanic.unit.RemoveAt(index);
-					break;
-				}
-				index++;
-			}
-
-			Destroy(gameObject);
 
 		isCoroutineExecuting = false;
 	}
-	//StartCoroutine(ExecuteAfterTime(3f));
-
+	StartCoroutine(ExecuteAfterTime(3f));*/
 	private void Attacking(){
 		this.frameAttacking++;
 		if(frameAttacking <= 15){
@@ -204,7 +180,8 @@ public class Unit : MonoBehaviour {
 		Moving();
 		//Attacking unit
 		Attacking();
-
+		
+		//If hp <= 0 unit die
 		if(this.hp <= 0){
 			this.hp = 0;
 			this.animator.SetTrigger("Die");
@@ -212,6 +189,7 @@ public class Unit : MonoBehaviour {
 			Debug.Log(this.unitName + " died");
 		}
 
+		//Change state sign to current unit state
 		foreach(KeyValuePair<string, GameObject> entry in this.unitState){
 			if(entry.Value.name == this.state){
 				entry.Value.SetActive(true);
