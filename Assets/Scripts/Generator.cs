@@ -180,7 +180,7 @@ public class Generator : MonoBehaviour {
 				}*/
 				/* */
 				
-				Unit unit = GenerateUnit("Golem", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
+				Unit unit = GenerateUnit("Villager", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
 				index++;
 			}
 		}

@@ -16,6 +16,8 @@ public class Status : MonoBehaviour {
 	public int move;
 	[JsonProperty("cost")]
 	public int cost;
+	[JsonProperty("availableClass")]
+	public string[] availableClass;
 	[JsonProperty("skill")]
 	public string[] skill;
 

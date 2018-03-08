@@ -13,13 +13,9 @@ public class Network : MonoBehaviour {
     const short END_TURN = 1003;
     const short DEFEND = 1004;
     const short LOSE = 1005;
+    const short CLASS_CHANGE = 1006;
     private bool setting = true;
     public NetworkManager networkManager;
-    //public GameObject gameMechanic;
-    private Network network;
-    //private Player player;
-    //private TurnManager turnManager;
-    //GameObject mainGame;
     public int team = 1;
 
     /*public void OnClientConnected(NetworkMessage msg){
@@ -161,7 +157,7 @@ public class Network : MonoBehaviour {
         GameObject gameMechanic = GameObject.Find("GameMechanic");
         Player player = GameObject.Find("Player").GetComponent<Player>();
         TurnManager turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
-        GameObject mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
+        GameObject userInterface = GameObject.Find("UserInterface");
 
         TurnMessage message = msg.ReadMessage<TurnMessage>();
         turnManager.time = message.time;
@@ -175,6 +171,7 @@ public class Network : MonoBehaviour {
             mechanic.selectedUnit = null;
         }
         
+        //Reset state of unit to idle
         List<Unit> units = gameMechanic.GetComponent<GameMechanic>().unit;
         foreach(Unit unit in units){
             if(unit.team == turnManager.currentTeamTurn){
@@ -182,15 +179,21 @@ public class Network : MonoBehaviour {
             }
         }
 
+        //Check if all player get a turn then loop to first player
         if(turnManager.currentTeamTurn == 1){
             turnManager.turn++;
+            //Increase cost of player each turn
+            player.cost++;
         }
         
         //if not player turn disable game user interface of player
         if(turnManager.currentTeamTurn != player.team){
-			mainGame.SetActive(false);
+			userInterface.transform.Find("MainGame").gameObject.SetActive(false);
+            userInterface.transform.Find("UnitDetails").gameObject.SetActive(false);
+            userInterface.transform.Find("Class").gameObject.SetActive(false);
+            userInterface.transform.Find("MiniMap").gameObject.SetActive(false);
 		}else{
-			mainGame.SetActive(true);
+			userInterface.transform.Find("MainGame").gameObject.SetActive(true);
         }
     }
 
@@ -236,6 +239,23 @@ public class Network : MonoBehaviour {
         winCondition.playerLoseStatus[message.team - 1] = true;
     }
 
+    public void SendClassChangeMessage(string unitName, string nextClass){
+        ClassChangeMessage message = new ClassChangeMessage();
+        message.unitName = unitName;
+        message.nextClass = nextClass;
+        this.networkManager.client.Send(CLASS_CHANGE, message);
+    }
+
+    public void OnServerLoseClassChangeMessageReceived(NetworkMessage msg){
+        ClassChangeMessage message = msg.ReadMessage<ClassChangeMessage>();
+        NetworkServer.SendToAll(CLASS_CHANGE, message);
+    }
+
+    public void OnClientClassChangeMessageReceived(NetworkMessage msg){
+        ClassChangeMessage message = msg.ReadMessage<ClassChangeMessage>();
+        GameObject.Find("GameMechanic").GetComponent<Class>().ClassChange(message.unitName, message.nextClass);
+    }
+
     void Start(){
         //this.gameMechanic = GameObject.Find("GameMechanic");
         this.networkManager = gameObject.GetComponent<NetworkManager>();
@@ -249,6 +269,7 @@ public class Network : MonoBehaviour {
         NetworkServer.RegisterHandler(END_TURN, OnServerEndTurnMessageReceived);
         NetworkServer.RegisterHandler(DEFEND, OnServerDefendCommandReceived);
         NetworkServer.RegisterHandler(LOSE, OnServerLoseStatusMessageReceived);
+        NetworkServer.RegisterHandler(CLASS_CHANGE, OnServerLoseClassChangeMessageReceived);
     }
 
     void Update(){
@@ -266,6 +287,7 @@ public class Network : MonoBehaviour {
             this.networkManager.client.RegisterHandler(END_TURN, OnClientEndTurnMessageReceived);
             this.networkManager.client.RegisterHandler(DEFEND, OnClientDefendCommandMessageReceived);
             this.networkManager.client.RegisterHandler(LOSE, OnClientLoseStatusMessageReceived);
+            this.networkManager.client.RegisterHandler(CLASS_CHANGE, OnClientClassChangeMessageReceived);
         }
 
     }
@@ -276,6 +298,11 @@ public class Network : MonoBehaviour {
     //     GUI.Label(new Rect(2, 30, 150, 100), "Press B for both");       
     //     GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
     // }
+}
+
+public class ClassChangeMessage: MessageBase {
+    public string unitName;
+    public string nextClass;
 }
 
 public class LoseStatusMessage: MessageBase {

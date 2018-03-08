@@ -56,8 +56,8 @@ public class GameMechanic : MonoBehaviour {
 		this.turnManager.currentTeamTurn = 1;
 		this.turnManager.time = 90f;
 		this.turnManager.turn = 1;
-
-
+		this.player.status = "Alive";
+		this.generator.GenerateUnitForEachTeam();
 	}
 
 	// Use this for initialization
@@ -75,8 +75,6 @@ public class GameMechanic : MonoBehaviour {
 		this.gameObject.GetComponent<Database>().ReadUnitStatus();
 
 		StartGame();
-
-		this.generator.GenerateUnitForEachTeam();
 	}
 
 	// Update is called once per frame

@@ -38,6 +38,13 @@ public class Hexagon : MonoBehaviour  {
 		this.y = y;
 		this.z = z;
 	}
+
+	public bool Compare(Hexagon hexagon){
+		if(this.x == hexagon.x && this.y == hexagon.y && this.z == hexagon.z){
+			return true;
+		}
+		return false;
+	}
 }
 
 public class Cube {

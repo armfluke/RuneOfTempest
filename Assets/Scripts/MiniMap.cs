@@ -33,7 +33,7 @@ public class MiniMap : MonoBehaviour {
 	//function to check if range is valid
 	public bool CheckRange(Hexagon[] range){
 		foreach(Hexagon hex in range){
-			if(this.hexagon.x == hex.x && this.hexagon.y == hex.y && this.hexagon.z == hex.z){
+			if(this.hexagon.Compare(hex)){
 				return true;
 			}
 		}
@@ -89,7 +89,7 @@ public class MiniMap : MonoBehaviour {
 
 	private bool UnitChecking(Hexagon hexagon){
 		foreach(Unit unit in this.gameMechanic.unit){
-			if(unit.position.x == hexagon.x && unit.position.y == hexagon.y && unit.position.z == hexagon.z){
+			if(unit.position.Compare(hexagon)){
 				return true;
 			}
 		}
@@ -168,7 +168,7 @@ public class MiniMap : MonoBehaviour {
 
 	private Unit SearchUnit(Hexagon position){
 		foreach(Unit unit in this.gameMechanic.unit){
-			if(unit.position.x == position.x && unit.position.y == position.y && unit.position.z == position.z){
+			if(unit.position.Compare(position)){
 				return unit;
 			}
 		}

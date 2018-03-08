@@ -11,6 +11,7 @@ public class Command : MonoBehaviour {
 	private GameObject userInterface;
 	private MiniMap miniMap;
 	private Network network;
+	public GameObject classObject;
 
 	public void Select(){
 		if(this.gameMechanic.selectedUnit != null && (this.gameMechanic.selectedUnit.state == "Idle" || this.gameMechanic.selectedUnit.state == "Move")){
@@ -55,7 +56,29 @@ public class Command : MonoBehaviour {
 	}
 
 	public void Class(){
-		
+		if(this.gameMechanic.selectedUnit.status.availableClass.Length != 0){
+			Transform foundedClass;
+			//Loop to enable button only available class
+			foreach(string availableClass in this.gameMechanic.selectedUnit.status.availableClass){
+				foundedClass = null;
+				foundedClass = this.classObject.transform.Find(availableClass);
+				if(foundedClass != null){
+					foundedClass.gameObject.GetComponent<Button>().interactable = true;
+				}else{
+					foundedClass.gameObject.GetComponent<Button>().interactable = false;
+				}
+			}
+		}else{
+			foreach(Transform child in this.classObject.transform){
+				if(child.name != "Back"){
+					child.GetComponent<Button>().interactable = false;
+				}
+			}
+		}
+
+		//swap screen
+		this.userInterface.transform.Find("UnitDetails").gameObject.SetActive(false);
+		this.userInterface.transform.Find("Class").gameObject.SetActive(true);
 	}
 
 	// Use this for initialization
@@ -64,6 +87,7 @@ public class Command : MonoBehaviour {
 		this.miniMap = gameObject.GetComponent<MiniMap>();
 		this.userInterface = GameObject.Find("UserInterface");
 		this.network = GameObject.Find("NetworkManager").GetComponent<Network>();
+		this.classObject = this.userInterface.transform.Find("Class").gameObject;
 	}
 	
 	// Update is called once per frame

@@ -108,20 +108,7 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public void Defend(){
-		this.state = "Defend";
-		Debug.Log(this.unitName + " Defend");
-	}
-
-	IEnumerator DelayBeforeDie(float time){
-		//Check if coroutine is already execute
-		if(isCoroutineExecuting){
-			yield break;
-		}
-		isCoroutineExecuting = true;
-		//Wait For seconds
-		yield return new WaitForSeconds(time);
-		// Code to execute after the delay
+	public void Die(){
 		GameObject miniMap = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").gameObject;
 		GameObject unitImage = miniMap.transform.Find(position.x+","+position.y+","+position.z).Find(this.unitName).gameObject;
 		Destroy(unitImage);
@@ -147,6 +134,23 @@ public class Unit : MonoBehaviour {
 		}
 
 		Destroy(gameObject);
+	}
+
+	public void Defend(){
+		this.state = "Defend";
+		Debug.Log(this.unitName + " Defend");
+	}
+
+	IEnumerator DelayBeforeDie(float time){
+		//Check if coroutine is already execute
+		if(isCoroutineExecuting){
+			yield break;
+		}
+		isCoroutineExecuting = true;
+		//Wait For seconds
+		yield return new WaitForSeconds(time);
+		// Code to execute after the delay
+		Die();
 
 		isCoroutineExecuting = false;
 	}
