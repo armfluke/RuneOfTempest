@@ -44,7 +44,8 @@
             
         ],
         "Skill": [
-            "KnightSpirit"
+            "KnightSpirit",
+            "Swordmanship"
         ]
     },
     "Paladin": {
@@ -58,7 +59,8 @@
             
         ],
         "Skill": [
-            "DivineShield"
+            "DivineShield",
+            "Swordmanship"
         ]
     },
     "Archer": {
@@ -87,7 +89,7 @@
             
         ],
         "Skill": [
-            "Ballista"
+            "Stealth"
         ]
     },
     "Gunslinger": {
@@ -101,7 +103,7 @@
             
         ],
         "Skill": [
-            "Bayonet"
+            "DoubleAttack"
         ]
     },
     "Wizard": {
@@ -115,7 +117,7 @@
             
         ],
         "Skill": [
-            "Meteor"
+            "Freeze"
         ]
     },
     "Priest": {
@@ -143,13 +145,13 @@
 
         ],
         "skill": [
-            "StoneSkin"
+            "Slam"
         ]
     },
     "Dragon": {
         "type": "Dragon",
         "hp": 20,
-        "attack": 21,
+        "attack": 5,
         "range": 2,
         "move": 3,
         "cost": 5,

@@ -107,7 +107,7 @@ public class Generator : MonoBehaviour {
 		unitDetails.unitName = unitName;
 		unitDetails.position = position;
 		unitDetails.team = team;
-		unitDetails.status = gameObject.GetComponent<Database>().unitStatus[unitType];
+		unitDetails.status = gameObject.GetComponent<Database>().status[unitType];
 		unitDetails.hp = unitDetails.status.maxHp;
 
 		GenerateImage(unitType, unitName, team, position);

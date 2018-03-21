@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using UnityEngine.Networking.NetworkSystem;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 
 public class Network : MonoBehaviour {
     
@@ -14,6 +15,7 @@ public class Network : MonoBehaviour {
     const short DEFEND = 1004;
     const short LOSE = 1005;
     const short CLASS_CHANGE = 1006;
+    const short SKILL = 1007;
     private bool setting = true;
     public NetworkManager networkManager;
     public int team = 1;
@@ -72,15 +74,15 @@ public class Network : MonoBehaviour {
 
     public void MoveUnit(Hexagon from, Hexagon to){
         MoveMessage msg = new MoveMessage();
-        msg.from = new Vector3(from.x, from.y, from.z);
-        msg.to = new Vector3(to.x, to.y, to.z);
+        msg.from = from.ToVector3();
+        msg.to = to.ToVector3();
         this.networkManager.client.Send(MOVE, msg);
     }
 
     public void AttackUnit(Hexagon from, Hexagon to){
         MoveMessage msg = new MoveMessage();
-        msg.from = new Vector3(from.x, from.y, from.z);
-        msg.to = new Vector3(to.x, to.y, to.z);
+        msg.from = from.ToVector3();
+        msg.to = to.ToVector3();
         this.networkManager.client.Send(ATTACK, msg);
     }
 
@@ -103,9 +105,7 @@ public class Network : MonoBehaviour {
         
         MoveMessage message = msg.ReadMessage<MoveMessage>();
         
-        gameMechanic.GetComponent<MiniMap>().Move( 
-            new Hexagon((int)message.from.x, (int)message.from.y, (int)message.from.z), 
-            new Hexagon((int)message.to.x, (int)message.to.y, (int)message.to.z));
+        gameMechanic.GetComponent<MiniMap>().Move(Hexagon.ToHexagon(message.from), Hexagon.ToHexagon(message.to));
     }
 
     public void OnClientTimerMessageReceived(NetworkMessage msg){
@@ -121,9 +121,7 @@ public class Network : MonoBehaviour {
 
         MoveMessage message = msg.ReadMessage<MoveMessage>();
         
-        gameMechanic.GetComponent<MiniMap>().Attack(
-            new Hexagon((int)message.from.x, (int)message.from.y, (int)message.from.z), 
-            new Hexagon((int)message.to.x, (int)message.to.y, (int)message.to.z));
+        gameMechanic.GetComponent<MiniMap>().Attack(Hexagon.ToHexagon(message.from), Hexagon.ToHexagon(message.to));
     }
 
     public void SendTurnMessage(float time, int turn){
@@ -176,6 +174,10 @@ public class Network : MonoBehaviour {
         foreach(Unit unit in units){
             if(unit.team == turnManager.currentTeamTurn){
                 unit.state = "Idle";
+                unit.cooldown--;
+                if(unit.cooldown < 0){
+                    unit.cooldown = 0;
+                }
             }
         }
 
@@ -184,6 +186,21 @@ public class Network : MonoBehaviour {
             turnManager.turn++;
             //Increase cost of player each turn
             player.cost++;
+
+            //Havesting skill(Increase cost by 1 per each villager)
+            foreach(Unit unit in player.playerUnits){
+                if(unit.status.type == "Villager"){
+                    player.cost++;
+                }
+            }
+
+            //reduce cooldown of skill
+            foreach(Unit unit in units){
+                unit.cooldown--;
+                if(unit.cooldown < 0){
+                    unit.cooldown = 0;
+                }
+            }
         }
         
         //if not player turn disable game user interface of player
@@ -256,12 +273,27 @@ public class Network : MonoBehaviour {
         GameObject.Find("GameMechanic").GetComponent<Class>().ClassChange(message.unitName, message.nextClass);
     }
 
+    public void SendSkillMessage(string skill, string unitName, Hexagon target){
+        SkillMessage msg = new SkillMessage();
+        msg.skill = skill;
+        msg.unitName = unitName;
+        msg.target = target.ToVector3();
+        this.networkManager.client.Send(SKILL, msg);
+    }
+
+    public void OnServerSkillMessageReceived(NetworkMessage msg){
+        SkillMessage message = msg.ReadMessage<SkillMessage>();
+        NetworkServer.SendToAll(SKILL, message);
+    }
+
+    public void OnClientSkillMessageReceived(NetworkMessage msg){
+        Skill skill = GameObject.Find("GameMechanic").GetComponent<Skill>();
+        SkillMessage message = msg.ReadMessage<SkillMessage>();
+        skill.Cast(message.skill, message.unitName, Hexagon.ToHexagon(message.target));
+    }
+
     void Start(){
-        //this.gameMechanic = GameObject.Find("GameMechanic");
         this.networkManager = gameObject.GetComponent<NetworkManager>();
-        //this.player = GameObject.Find("Player").GetComponent<Player>();
-        //this.turnManager = GameObject.Find("GameMechanic").GetComponent<TurnManager>();
-        //this.mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
         //Setting server handler
         NetworkServer.RegisterHandler(TEAM, OnServerTeamRequestMessageReceived);
         NetworkServer.RegisterHandler(MOVE, OnServerMoveMessageReceived);
@@ -270,6 +302,7 @@ public class Network : MonoBehaviour {
         NetworkServer.RegisterHandler(DEFEND, OnServerDefendCommandReceived);
         NetworkServer.RegisterHandler(LOSE, OnServerLoseStatusMessageReceived);
         NetworkServer.RegisterHandler(CLASS_CHANGE, OnServerLoseClassChangeMessageReceived);
+        NetworkServer.RegisterHandler(SKILL, OnServerSkillMessageReceived);
     }
 
     void Update(){
@@ -288,6 +321,7 @@ public class Network : MonoBehaviour {
             this.networkManager.client.RegisterHandler(DEFEND, OnClientDefendCommandMessageReceived);
             this.networkManager.client.RegisterHandler(LOSE, OnClientLoseStatusMessageReceived);
             this.networkManager.client.RegisterHandler(CLASS_CHANGE, OnClientClassChangeMessageReceived);
+            this.networkManager.client.RegisterHandler(SKILL, OnClientSkillMessageReceived);
         }
 
     }
@@ -298,6 +332,12 @@ public class Network : MonoBehaviour {
     //     GUI.Label(new Rect(2, 30, 150, 100), "Press B for both");       
     //     GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
     // }
+}
+
+public class SkillMessage: MessageBase {
+    public string skill;
+    public string unitName;
+    public Vector3 target;
 }
 
 public class ClassChangeMessage: MessageBase {

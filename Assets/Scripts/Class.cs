@@ -5,13 +5,13 @@ using UnityEngine.EventSystems;
 
 public class Class : MonoBehaviour {
 
-	public Generator generator;
-	public Player player;
-	public Network network;
-	public GameMechanic gameMechanic;
-	public GameObject classTree;
-	public GameObject mainGame;
-	public Database database;
+	private Generator generator;
+	private Player player;
+	private Network network;
+	private GameMechanic gameMechanic;
+	private GameObject classTree;
+	private GameObject mainGame;
+	private Database database;
 
 	/*T CopyComponent<T>(T original, GameObject destination) where T : Component {
 		System.Type type = original.GetType();
@@ -24,8 +24,8 @@ public class Class : MonoBehaviour {
 	}*/
 
 	public void ClassChangeClicked(){
-		if(this.player.cost >= this.database.unitStatus[EventSystem.current.currentSelectedGameObject.name].cost){
-			this.player.cost -= this.database.unitStatus[EventSystem.current.currentSelectedGameObject.name].cost;
+		if(this.player.cost >= this.database.status[EventSystem.current.currentSelectedGameObject.name].cost){
+			this.player.cost -= this.database.status[EventSystem.current.currentSelectedGameObject.name].cost;
 			this.classTree.SetActive(false);
 			this.mainGame.SetActive(true);
 			this.network.SendClassChangeMessage(this.gameMechanic.selectedUnit.unitName, EventSystem.current.currentSelectedGameObject.name);

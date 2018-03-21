@@ -11,7 +11,7 @@ public class Cost : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		this.database = GameObject.Find("GameMechanic").GetComponent<Database>();
-		GetComponent<Text>().text = this.database.unitStatus[transform.parent.name].cost.ToString();
+		GetComponent<Text>().text = this.database.status[transform.parent.name].cost.ToString();
 	}
 	
 	// Update is called once per frame

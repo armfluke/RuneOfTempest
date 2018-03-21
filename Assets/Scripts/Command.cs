@@ -12,6 +12,7 @@ public class Command : MonoBehaviour {
 	private MiniMap miniMap;
 	private Network network;
 	public GameObject classObject;
+	public Skill skillObject;
 
 	public void Select(){
 		if(this.gameMechanic.selectedUnit != null && (this.gameMechanic.selectedUnit.state == "Idle" || this.gameMechanic.selectedUnit.state == "Move")){
@@ -52,12 +53,15 @@ public class Command : MonoBehaviour {
 	}
 
 	public void Skill(){
-
+		if(this.gameMechanic.selectedUnit.cooldown == 0){
+			this.skill = true;
+			this.skillObject.Call(this.gameMechanic.selectedUnit.status.skill[0]);
+		}
 	}
 
 	public void Class(){
 		if(this.gameMechanic.selectedUnit.status.availableClass.Length != 0){
-			Transform foundedClass;
+			/*Transform foundedClass;
 			//Loop to enable button only available class
 			foreach(string availableClass in this.gameMechanic.selectedUnit.status.availableClass){
 				foundedClass = null;
@@ -66,6 +70,19 @@ public class Command : MonoBehaviour {
 					foundedClass.gameObject.GetComponent<Button>().interactable = true;
 				}else{
 					foundedClass.gameObject.GetComponent<Button>().interactable = false;
+				}
+			}*/
+			foreach(Transform child in this.classObject.transform){
+				bool foundedClass = false;
+				foreach(string availableClass in this.gameMechanic.selectedUnit.status.availableClass){
+					if(child.name == availableClass || child.name == "Back"){
+						foundedClass = true;
+					}
+				}
+				if(foundedClass == true){
+					child.GetComponent<Button>().interactable = true;
+				}else{
+					child.GetComponent<Button>().interactable = false;
 				}
 			}
 		}else{
@@ -88,6 +105,7 @@ public class Command : MonoBehaviour {
 		this.userInterface = GameObject.Find("UserInterface");
 		this.network = GameObject.Find("NetworkManager").GetComponent<Network>();
 		this.classObject = this.userInterface.transform.Find("Class").gameObject;
+		this.skillObject = gameObject.GetComponent<Skill>();
 	}
 	
 	// Update is called once per frame

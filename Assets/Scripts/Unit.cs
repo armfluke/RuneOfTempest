@@ -12,6 +12,7 @@ public class Unit : MonoBehaviour {
 	public int hp;
 	public Status status;
 	public string state = "Idle";
+	public int cooldown = 0;
 	Vector3 targetPosition;
 	//RaycastHit hitInfo;
 	bool attacking = false;
@@ -25,6 +26,8 @@ public class Unit : MonoBehaviour {
 	public GameMechanic gameMechanic;
 	public Player player;
 	public Dictionary<string ,GameObject> unitState = new Dictionary<string, GameObject>();
+	private Cube cube;
+	private Database database;
 
 	public float CalculateDifferentAngle(){
 		//Calculate rotation angle
@@ -84,7 +87,38 @@ public class Unit : MonoBehaviour {
 
 		this.frameAttacking = 0;
 
-		target.hp -= this.status.attack;
+		int additionalDamage = 0;
+		//Check skill before final damage
+		foreach(string skill in this.status.skill){
+			switch(skill){
+				case "Swordmanship":
+					additionalDamage += this.database.skill[skill].damage;
+					break;
+				case "Archery":
+					//Check if target unit is neighbor
+					bool checkNeighbor = false;
+					Hexagon[] neighbor = this.cube.Neighbor(this.position);
+					foreach(Hexagon tile in neighbor){
+						if(target.position.Compare(tile)){
+							checkNeighbor = true;
+						}
+					}
+
+					//If target unit is not close this unit add damage
+					if(checkNeighbor == false){
+						additionalDamage += this.database.skill[skill].damage;
+					}
+					break;
+				case "DivineShield":
+					if(this.status.attack - this.database.skill[skill].damage > 0){
+						additionalDamage -= this.database.skill[skill].damage;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		target.hp -= this.status.attack + additionalDamage;
 	}
 
 	private bool isCoroutineExecuting = false;
@@ -162,6 +196,8 @@ public class Unit : MonoBehaviour {
 		this.animator = transform.Find(this.unitName).GetComponent<Animator>();
 		this.healthBar = transform.Find("Health").Find("Background").Find("Foreground").GetComponent<RectTransform>();
 		this.healthText = transform.Find("Health").Find("Text").GetComponent<Text>();
+		this.cube = new Cube();
+		this.database = GameObject.Find("GameMechanic").GetComponent<Database>();
 
 		Transform stateObject = transform.Find("Health").Find("State");
 		//Get each game object state
@@ -172,6 +208,9 @@ public class Unit : MonoBehaviour {
 		this.unitState["Skill"] = stateObject.Find("Skill").gameObject;
 		this.unitState["Rest"] = stateObject.Find("Rest").gameObject;
 		this.unitState["Die"] = stateObject.Find("Die").gameObject;
+		this.unitState["Stun"] = stateObject.Find("Stun").gameObject;
+		this.unitState["Freeze"] = stateObject.Find("Freeze").gameObject;
+		this.unitState["Stealth"] = stateObject.Find("Stealth").gameObject;
 	}
 	
 	// Update is called once per frame

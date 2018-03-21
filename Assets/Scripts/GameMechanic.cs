@@ -11,7 +11,7 @@ public class GameMechanic : MonoBehaviour {
 
 	public const int MAX_PLAYER = 2;
 
-	public Cube cube = new Cube();
+	private Cube cube = new Cube();
 	Generator generator;
 	//public GameObject map;
 	//Hexagon[] tiles;
@@ -71,8 +71,9 @@ public class GameMechanic : MonoBehaviour {
 		/*this.pointer = GameObject.Find("Pointer");
 		this.map = GameObject.Find("Drivers").transform.Find("Map").gameObject;*/
 
-
-		this.gameObject.GetComponent<Database>().ReadUnitStatus();
+		Database database = gameObject.GetComponent<Database>();
+		database.ReadUnitStatus();
+		database.ReadSkillStatus();
 
 		StartGame();
 	}

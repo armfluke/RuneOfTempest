@@ -21,6 +21,9 @@ public class StateController : MonoBehaviour {
 		this.state["Skill"] = transform.Find("Skill").gameObject;
 		this.state["Rest"] = transform.Find("Rest").gameObject;
 		this.state["Die"] = transform.Find("Die").gameObject;
+		this.state["Stun"] = transform.Find("Stun").gameObject;
+		this.state["Freeze"] = transform.Find("Freeze").gameObject;
+		this.state["Stealth"] = transform.Find("Stealth").gameObject;
 	}
 	
 	// Update is called once per frame

@@ -13,9 +13,13 @@ public class MiniMap : MonoBehaviour {
 	private GameMechanic gameMechanic;
 	private Unit selectedUnit;
 	private Network network;
-	GameObject userInterface;
-	GameObject miniMap;
-	GameObject mainGame;
+	private GameObject userInterface;
+	private GameObject miniMap;
+	private GameObject mainGame;
+	private Skill skill;
+	private Database database;
+	private Cube cube = new Cube();
+
 
 	public void Back(){
 		this.userInterface.transform.Find("MiniMap").gameObject.SetActive(false);
@@ -27,6 +31,9 @@ public class MiniMap : MonoBehaviour {
 		}else if(this.command.attack){
 			ResetMiniMapHilightForAttacking();
 			this.command.attack = false;
+		}else if(this.command.skill){
+			ResetMiniMapHilightForSkill(this.database.skill[this.skill.currentSkill].range);
+			this.command.skill = false;
 		}
 	}
 
@@ -51,7 +58,7 @@ public class MiniMap : MonoBehaviour {
 		this.selectedUnit = this.gameMechanic.selectedUnit;
 
 		if(this.command.move == true){
-			range = this.gameMechanic.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.move);
+			range = this.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.move);
 			checkRange = CheckRange(range);
 			
 			if(checkRange && !UnitChecking(this.hexagon)){
@@ -64,7 +71,7 @@ public class MiniMap : MonoBehaviour {
 				//Move();
 			}
 		}else if(this.command.attack == true){
-			range = this.gameMechanic.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.range);
+			range = this.cube.MovementRange(this.selectedUnit.position, this.selectedUnit.status.range);
 			checkRange = CheckRange(range);
 
 			Unit targetUnit = SearchUnit(this.hexagon);
@@ -80,10 +87,16 @@ public class MiniMap : MonoBehaviour {
 				//Attack(targetUnit);
 			}
 		}else if(this.command.skill == true){
-			this.miniMap.SetActive(false);
-			this.mainGame.SetActive(true);
-			this.command.skill = false;
-			Skill();
+			Unit targetUnit = SearchUnit(this.hexagon);
+			range = this.cube.MovementRange(this.selectedUnit.position, this.database.skill[this.skill.currentSkill].range);
+			checkRange = CheckRange(range);
+
+			if(targetUnit && checkRange && targetUnit.team != this.selectedUnit.team){
+				this.miniMap.SetActive(false);
+				this.mainGame.SetActive(true);
+				this.command.skill = false;
+				Skill(this.hexagon);
+			}
 		}
 	}
 
@@ -96,6 +109,39 @@ public class MiniMap : MonoBehaviour {
 		return false;
 	}
 
+	public void HilightMiniMapForSkill(int skillRange){
+		Transform miniMap = this.miniMap.transform.Find("MiniMap");
+		Color yellow = Color.yellow;
+		yellow.a = 0.65f;
+		Color blue = Color.blue;
+		blue.a = 0.65f;
+
+		Hexagon[] range = this.cube.MovementRange(this.gameMechanic.selectedUnit.position, skillRange);
+		foreach(Hexagon tile in range){
+			Transform hexagon = miniMap.transform.Find(tile.x + "," + tile.y + "," + tile.z);
+			if(hexagon){
+				hexagon.Find("Hilight").GetComponent<Image>().color = yellow;
+			}
+		}
+
+		miniMap.transform.Find(this.gameMechanic.selectedUnit.position.x + "," + this.gameMechanic.selectedUnit.position.y + "," + this.gameMechanic.selectedUnit.position.z)
+			.Find("Hilight").GetComponent<Image>().color = blue;
+	}
+
+	public void ResetMiniMapHilightForSkill(int skillRange){
+		Transform miniMap = this.miniMap.transform.Find("MiniMap");
+		Color white = Color.white;
+		white.a = 0.275f;
+
+		Hexagon[] range = this.cube.MovementRange(this.gameMechanic.selectedUnit.position, skillRange);
+		foreach(Hexagon tile in range){
+			Transform hexagon = miniMap.Find(tile.x + "," + tile.y + "," + tile.z);
+			if(hexagon){
+				hexagon.Find("Hilight").GetComponent<Image>().color = white;
+			}
+		}
+	}
+
 	public void HilightMiniMapForMoving(){
 		Transform miniMap = this.miniMap.transform.Find("MiniMap");
 		Color green = Color.green;
@@ -103,7 +149,7 @@ public class MiniMap : MonoBehaviour {
 		Color blue = Color.blue;
 		blue.a = 0.65f;
 
-		Hexagon[] range = this.gameMechanic.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.move);
+		Hexagon[] range = this.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.move);
 		foreach(Hexagon tile in range){
 			Transform hexagon = miniMap.transform.Find(tile.x + "," + tile.y + "," + tile.z);
 			if(hexagon){
@@ -120,7 +166,7 @@ public class MiniMap : MonoBehaviour {
 		Color white = Color.white;
 		white.a = 0.275f;
 
-		Hexagon[] range = this.gameMechanic.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.move);
+		Hexagon[] range = this.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.move);
 		foreach(Hexagon tile in range){
 			Transform hexagon = miniMap.Find(tile.x + "," + tile.y + "," + tile.z);
 			if(hexagon){
@@ -142,29 +188,7 @@ public class MiniMap : MonoBehaviour {
 		unitImage.GetComponent<RectTransform>().position = targetTile.GetComponent<RectTransform>().position;
 
 		unit.Move(to);
-
-		//GameObject.Find("Drivers").transform.Find(unitName).GetComponent<Unit>().Move(to);
-
-		/*foreach(Unit unit in this.gameMechanic.unit){
-			Debug.Log(unit.position.x+","+unit.position.y+","+unit.position.z+"||"+from.x+","+from.y+","+from.z+"||"+(unit.position.x == from.x && unit.position.x == from.y && unit.position.x == from.z));
-			if(unit.position.x == from.x && unit.position.x == from.y && unit.position.x == from.z){
-				Debug.Log("Unit found: "+unit.name);
-				unit.Move(to);
-				break;
-			}
-		}*/
 	}
-
-	/*private void Move(){
-		GameObject userInterface = GameObject.Find("UserInterface");
-		Transform miniMap = userInterface.transform.Find("MiniMap").Find("MiniMap");
-		Hexagon position = this.selectedUnit.position;
-		Transform unitImage = miniMap.transform.Find(position.x + "," + position.y + "," + position.z)
-							.Find(this.selectedUnit.name).transform;
-		unitImage.parent = this.tile.transform;
-		unitImage.GetComponent<RectTransform>().position = this.tile.GetComponent<RectTransform>().position;
-		this.selectedUnit.Move(this.hexagon);
-	}*/
 
 	private Unit SearchUnit(Hexagon position){
 		foreach(Unit unit in this.gameMechanic.unit){
@@ -183,7 +207,7 @@ public class MiniMap : MonoBehaviour {
 		Color blue = Color.blue;
 		blue.a = 0.65f;
 
-		Hexagon[] range = this.gameMechanic.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.range);
+		Hexagon[] range = this.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.range);
 		foreach(Hexagon tile in range){
 			Transform hexagon = miniMap.transform.Find(tile.x + "," + tile.y + "," + tile.z);
 			if(hexagon){
@@ -200,7 +224,7 @@ public class MiniMap : MonoBehaviour {
 		Color white = Color.white;
 		white.a = 0.275f;
 
-		Hexagon[] range = this.gameMechanic.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.range);
+		Hexagon[] range = this.cube.MovementRange(this.gameMechanic.selectedUnit.position, this.gameMechanic.selectedUnit.status.range);
 		foreach(Hexagon tile in range){
 			Transform hexagon = miniMap.Find(tile.x + "," + tile.y + "," + tile.z);
 			if(hexagon){
@@ -215,12 +239,8 @@ public class MiniMap : MonoBehaviour {
 		unit.Attack(targetUnit);
 	}
 
-	/*private void Attack(Unit targetUnit){
-		this.selectedUnit.Attack(targetUnit);
-	}*/
-
-	private void Skill(){
-
+	private void Skill(Hexagon target){
+		this.network.SendSkillMessage(this.skill.currentSkill, this.gameMechanic.selectedUnit.name, target);
 	}
 
 	// Use this for initialization
@@ -231,6 +251,8 @@ public class MiniMap : MonoBehaviour {
 		this.userInterface = GameObject.Find("UserInterface");
 		this.mainGame = userInterface.transform.Find("MainGame").gameObject;
 		this.miniMap = userInterface.transform.Find("MiniMap").gameObject;
+		this.skill = gameObject.GetComponent<Skill>();
+		this.database = gameObject.GetComponent<Database>();
 
 		//Attach Hexagon sript and coordinate to each tile ***For adding new tile
 		/*int count = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").childCount;
