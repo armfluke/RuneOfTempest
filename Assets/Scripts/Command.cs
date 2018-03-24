@@ -15,9 +15,32 @@ public class Command : MonoBehaviour {
 	public Skill skillObject;
 
 	public void Select(){
-		if(this.gameMechanic.selectedUnit != null && (this.gameMechanic.selectedUnit.state == "Idle" || this.gameMechanic.selectedUnit.state == "Move")){
+		GameObject unitDetails = this.userInterface.transform.Find("UnitDetails").gameObject;
+		Database database = gameObject.GetComponent<Database>();
+		Unit unit = this.gameMechanic.selectedUnit;
+		if(unit != null && (unit.state == "Idle" || unit.state == "Move")){
 			this.userInterface.transform.Find("MainGame").gameObject.SetActive(false);
-			this.userInterface.transform.Find("UnitDetails").gameObject.SetActive(true);			
+			unitDetails.SetActive(true);
+			//Change unit image to selected unit
+			Image unitImage = unitDetails.transform.Find("UnitImage").Find("Image").GetComponent<Image>();
+			unitImage.sprite = Resources.Load<Sprite>("Images/" + unit.status.type);
+			//Change description to selected unit
+			Transform description = unitDetails.transform.Find("Description");
+			description.Find("Class").GetComponent<Text>().text = "Class: " + unit.status.type;
+			description.Find("Hp").GetComponent<Text>().text = "Hp: " + unit.hp + "/" + unit.status.maxHp;
+			description.Find("Move").GetComponent<Text>().text = "Move: " + unit.status.move;
+			description.Find("Attack").GetComponent<Text>().text = "Attack: " + unit.status.attack;
+			description.Find("Range").GetComponent<Text>().text = "Range: " + unit.status.range;
+			string skill = "";
+			for(int i=0; i<unit.status.skill.Length; i++){
+				if(i == 0){
+					skill += unit.status.skill[i] + "(" + database.skill[unit.status.skill[i]].type + "): " + database.skill[unit.status.skill[i]].description;
+				}else{
+					skill += "\n" + unit.status.skill[i] + "(" + database.skill[unit.status.skill[i]].type + "): " + database.skill[unit.status.skill[i]].description;
+				}
+			}
+			unitDetails.transform.Find("Skill").Find("Text").GetComponent<Text>().text = skill;
+			
 		}
 	}
 
