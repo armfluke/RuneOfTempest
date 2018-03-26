@@ -23,7 +23,7 @@ public class Command : MonoBehaviour {
 			unitDetails.SetActive(true);
 			//Change unit image to selected unit
 			Image unitImage = unitDetails.transform.Find("UnitImage").Find("Image").GetComponent<Image>();
-			unitImage.sprite = Resources.Load<Sprite>("Images/" + unit.status.type);
+			unitImage.sprite = Resources.Load<Sprite>("Images/Units/" + unit.status.type);
 			//Change description to selected unit
 			Transform description = unitDetails.transform.Find("Description");
 			description.Find("Class").GetComponent<Text>().text = "Class: " + unit.status.type;

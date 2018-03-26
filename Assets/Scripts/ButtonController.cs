@@ -42,7 +42,7 @@ public class ButtonController : MonoBehaviour {
 				this.button.interactable = false;
 			}
 
-			transform.Find("Image").GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/" + unit.status.type);
+			transform.Find("Image").GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Units/" + unit.status.type);
 		}
 
 

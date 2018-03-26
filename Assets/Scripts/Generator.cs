@@ -58,7 +58,7 @@ public class Generator : MonoBehaviour {
 		unitObject.transform.SetParent(GameObject.Find("Drivers").transform);
 
 		//Create unit
-		GameObject unit = (GameObject)Resources.Load("Prefabs/" + unitType, typeof(GameObject));
+		GameObject unit = (GameObject)Resources.Load("Prefabs/Units/" + unitType, typeof(GameObject));
 		unit = (GameObject)Instantiate(unit, origin, Quaternion.Euler(Vector3.zero));
 		unit.name = unitName;
 		unit.transform.SetParent(unitObject.transform);
@@ -120,7 +120,7 @@ public class Generator : MonoBehaviour {
 	public void GenerateImage(String imageName, String name, int team, Hexagon position){
 		//Create unit image on minimap
 		GameObject miniMap = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").gameObject;
-		Sprite sprite = Resources.Load<Sprite>("Images/" + imageName);
+		Sprite sprite = Resources.Load<Sprite>("Images/Units/" + imageName);
 		GameObject imageObject = new GameObject();
 		imageObject.name = name;
 		Transform tile = miniMap.transform.Find(position.x + "," + position.y + "," + position.z);
