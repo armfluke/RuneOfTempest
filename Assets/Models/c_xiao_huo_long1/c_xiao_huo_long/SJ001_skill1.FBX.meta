@@ -1,7 +1,7 @@
 fileFormatVersion: 2
 guid: 3b23d5023ebc8f149960bca44f792173
 ModelImporter:
-  serializedVersion: 16
+  serializedVersion: 19
   fileIDToRecycleName:
     100000: B_00
     100002: B_01
@@ -118,19 +118,158 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 34
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: B_Root
+        weight: 1
+      - path: B_Root/B_bip01
+        weight: 1
+      - path: B_Root/B_bip01/B_00
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_03
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_04
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_04/B_05
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_04/B_05/B_06
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_07
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_07/B_08
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_07/B_08/B_09
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_10
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_10/B_11
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_10/B_11/B_12
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_10/B_11/B_12/B_13
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_14
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_14/B_15
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_14/B_15/B_16
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_14/B_15/B_16/B_17
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_18
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_01/B_02/B_18/B_19
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_20
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_20/B_21
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_20/B_21/B_22
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_20/B_21/B_22/B_23
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_24
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_24/B_25
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_24/B_25/B_26
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_24/B_25/B_26/B_27
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_28
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_28/B_29
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_28/B_29/B_30
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_31
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_31/B_32
+        weight: 1
+      - path: B_Root/B_bip01/B_00/B_31/B_32/B_33
+        weight: 1
+      - path: B_Root/B_bip01/B_34
+        weight: 1
+      - path: B_Root/B_bip01/B_34/B_35
+        weight: 1
+      - path: B_Root/B_bip01/B_34/B_35/B_36
+        weight: 1
+      - path: B_Root/B_bip01/B_34/B_35/B_36/B_37
+        weight: 1
+      - path: B_Root/B_bip01/B_38
+        weight: 1
+      - path: B_Root/B_bip01/B_38/B_39
+        weight: 1
+      - path: B_Root/B_bip01/B_38/B_39/B_40
+        weight: 1
+      - path: B_Root/B_bip01/B_38/B_39/B_40/B_41
+        weight: 1
+      - path: B_Root/B_bip01/B_42
+        weight: 1
+      - path: B_Root/B_bip01/B_42/B_43
+        weight: 1
+      - path: B_Root/B_bip01/B_42/B_43/B_44
+        weight: 1
+      - path: B_Root/B_bip01/B_42/B_43/B_44/B_45
+        weight: 1
+      - path: B_Root/B_bip01/B_42/B_43/B_44/B_45/B_46
+        weight: 1
+      - path: B_Root/B_bip01/B_42/B_43/B_44/B_45/B_46/B_47
+        weight: 1
+      - path: sJ001
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: 0.01
     meshCompression: 0
     addColliders: 0
     importBlendShapes: 1
@@ -138,30 +277,39 @@ ModelImporter:
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
+    tangentImportMode: 4
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
-    armTwist: .5
-    foreArmTwist: .5
-    upperLegTwist: .5
-    legTwist: .5
-    armStretch: .0500000007
-    legStretch: .0500000007
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
+  humanoidOversampling: 1
   additionalBone: 1
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
