@@ -9,11 +9,11 @@ using UnityEngine.Networking.Match;
 public class WinCondition : MonoBehaviour {
 
 	public Player player;
-	public TurnManager turnManager;
+	private TurnManager turnManager;
 	private int checkTurnChange;
-	public GameMechanic gameMechanic;
-	public Hexagon[] castlePosition;
-	public NetworkManager networkManager;
+	private GameMechanic gameMechanic;
+	private Hexagon[] castlePosition;
+	private NetworkManager networkManager;
 	public int[] castleConquerCount = new int[]{0, 0, 0, 0};
 	public bool[] checkCastleConquer = new bool[]{false, false, false, false};
 	public Unit[] castleConquerUnit = new Unit[4];

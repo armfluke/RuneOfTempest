@@ -11,7 +11,7 @@ public class GameMechanic : MonoBehaviour {
 
 	public const int MAX_PLAYER = 2;
 
-	public Cube cube = new Cube();
+	private Cube cube = new Cube();
 	Generator generator;
 	//public GameObject map;
 	//Hexagon[] tiles;
@@ -56,8 +56,8 @@ public class GameMechanic : MonoBehaviour {
 		this.turnManager.currentTeamTurn = 1;
 		this.turnManager.time = 90f;
 		this.turnManager.turn = 1;
-
-
+		this.player.status = "Alive";
+		this.generator.GenerateUnitForEachTeam();
 	}
 
 	// Use this for initialization
@@ -71,12 +71,11 @@ public class GameMechanic : MonoBehaviour {
 		/*this.pointer = GameObject.Find("Pointer");
 		this.map = GameObject.Find("Drivers").transform.Find("Map").gameObject;*/
 
-
-		this.gameObject.GetComponent<Database>().ReadUnitStatus();
+		Database database = gameObject.GetComponent<Database>();
+		database.ReadUnitStatus();
+		database.ReadSkillStatus();
 
 		StartGame();
-
-		this.generator.GenerateUnitForEachTeam();
 	}
 
 	// Update is called once per frame

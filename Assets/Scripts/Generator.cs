@@ -10,6 +10,7 @@ public class Generator : MonoBehaviour {
 
 	private Player player;
 	private int countTeam = 0;
+	public GameObject drivers;
 
 	private Hexagon[][] positionForEachTeam = new Hexagon[][]{
 		new Hexagon[]{new Hexagon(-6,-1,7), new Hexagon(-5,-2,7), new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), new Hexagon(-7,2,5), new Hexagon(-7,1,6)},
@@ -44,20 +45,30 @@ public class Generator : MonoBehaviour {
 
 	//Generate unit
 	public Unit GenerateUnit(string unitType, string unitName, int team, Hexagon position){
+		GameMechanic gameMechanic = gameObject.GetComponent<GameMechanic>();
 		Vector3 origin = Vector3.zero;	//Default location if unit is not found
-
+		/*Debug.Log("1");
+		Debug.Log(GameObject.Find("Drivers"));
+		Debug.Log("2");
+		Debug.Log(GameObject.Find("Drivers").transform.Find("Map"));
+		Debug.Log("3");
+		Debug.Log(GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z));
+		Debug.Log("4");
+		Debug.Log(GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
+				.position);
+		Debug.Log("5");*/
 		//Get position of tile to instantiate unit
-		origin = GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
+		origin = this.drivers.transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
 				.position + new Vector3(0, 0.5f, 0);
 
 		//Create an object to hold unit and health
 		GameObject unitObject = new GameObject();
 		unitObject.name = unitName;
 		unitObject.transform.position = origin;
-		unitObject.transform.SetParent(GameObject.Find("Drivers").transform);
+		unitObject.transform.SetParent(this.drivers.transform);
 
 		//Create unit
-		GameObject unit = (GameObject)Resources.Load("Prefabs/" + unitType, typeof(GameObject));
+		GameObject unit = (GameObject)Resources.Load("Prefabs/Units/" + unitType, typeof(GameObject));
 		unit = (GameObject)Instantiate(unit, origin, Quaternion.Euler(Vector3.zero));
 		unit.name = unitName;
 		unit.transform.SetParent(unitObject.transform);
@@ -106,10 +117,12 @@ public class Generator : MonoBehaviour {
 		unitDetails.unitName = unitName;
 		unitDetails.position = position;
 		unitDetails.team = team;
-		unitDetails.status = gameObject.GetComponent<Database>().unitStatus[unitType];
+		unitDetails.status = gameObject.GetComponent<Database>().status[unitType];
 		unitDetails.hp = unitDetails.status.maxHp;
 
 		GenerateImage(unitType, unitName, team, position);
+
+		gameMechanic.unit.Add(unitDetails);
 
 		return unitDetails;
 	}
@@ -117,7 +130,7 @@ public class Generator : MonoBehaviour {
 	public void GenerateImage(String imageName, String name, int team, Hexagon position){
 		//Create unit image on minimap
 		GameObject miniMap = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").gameObject;
-		Sprite sprite = Resources.Load<Sprite>("Images/" + imageName);
+		Sprite sprite = Resources.Load<Sprite>("Images/Units/" + imageName);
 		GameObject imageObject = new GameObject();
 		imageObject.name = name;
 		Transform tile = miniMap.transform.Find(position.x + "," + position.y + "," + position.z);
@@ -167,19 +180,17 @@ public class Generator : MonoBehaviour {
 	}
 
 	public void GenerateUnitForEachTeam(){
-		GameMechanic gameMechanic = gameObject.GetComponent<GameMechanic>();
 		for(int i = 0; i < GameMechanic.MAX_PLAYER; i++){
 			int index = 0;
 			foreach(Hexagon position in positionForEachTeam[i]){
 
 				/* */
-				if(index >= 1){
+				/*if(index >= 1){
 					break;
-				}
+				}*/
 				/* */
 				
-				Unit unit = GenerateUnit("Golem", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
-				gameMechanic.unit.Add(unit);
+				Unit unit = GenerateUnit("Villager", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
 				index++;
 			}
 		}

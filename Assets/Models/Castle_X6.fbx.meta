@@ -1,0 +1,401 @@
+fileFormatVersion: 2
+guid: 2a34bf386c22cf34493ac7f0d1ab21fe
+timeCreated: 1522124629
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: BASE
+    100002: Block low
+    100004: Block low Roof
+    100006: Box
+    100008: BRIDGE
+    100010: BUILDING A
+    100012: BUILDING B
+    100014: Castle
+    100016: //RootNode
+    100018: CLOISTER
+    100020: Columns
+    100022: CONE
+    100024: Cone
+    100026: Crennelation
+    100028: Crennelation.1
+    100030: Cross Beam
+    100032: Deck
+    100034: Doorway
+    100036: DummyLight
+    100038: Eaves B
+    100040: Embrasure
+    100042: Embrasures
+    100044: Embrasures.1
+    100046: Embrasures.2
+    100048: Frames Top East
+    100050: Frames Top South
+    100052: Gable Steps
+    100054: GalleryBottom
+    100056: GalleryBottom Panels
+    100058: GalleryTop
+    100060: GATE
+    100062: Kapitel
+    100064: Moat
+    100066: Oriel A1
+    100068: Oriel A1 Panel
+    100070: Oriel A1 Roof
+    100072: Oriel A1.1
+    100074: Oriel A2
+    100076: Oriel A2 Panel
+    100078: Oriel A2 Roof
+    100080: Oriel A2.1
+    100082: Oriel B
+    100084: Oriel B Roof
+    100086: Oriel B.1
+    100088: Oriels
+    100090: Panel East
+    100092: Panel South
+    100094: Panels Bottom
+    100096: PanelsCone
+    100098: Plan centre
+    100100: Plan cloister
+    100102: PM Panels
+    100104: PM Windows
+    100106: Rafters
+    100108: Roof B
+    100110: Roof left
+    100112: Roof right
+    100114: Scene
+    100116: Side rails
+    100118: Signature
+    100120: Thumbs
+    100122: Top
+    100124: TOWER 1
+    100126: TOWER 2
+    100128: TOWER 3
+    100130: Tower 8Gon front
+    100132: Tower 8Gon middle
+    100134: Tower 8Gon rear
+    100136: Towers Gate
+    100138: Vaults
+    100140: Voussoirs
+    100142: WALL
+    100144: Wall
+    100146: Windows Bottom
+    100148: WindowsCone
+    100150: Wireframes
+    400000: BASE
+    400002: Block low
+    400004: Block low Roof
+    400006: Box
+    400008: BRIDGE
+    400010: BUILDING A
+    400012: BUILDING B
+    400014: Castle
+    400016: //RootNode
+    400018: CLOISTER
+    400020: Columns
+    400022: CONE
+    400024: Cone
+    400026: Crennelation
+    400028: Crennelation.1
+    400030: Cross Beam
+    400032: Deck
+    400034: Doorway
+    400036: DummyLight
+    400038: Eaves B
+    400040: Embrasure
+    400042: Embrasures
+    400044: Embrasures.1
+    400046: Embrasures.2
+    400048: Frames Top East
+    400050: Frames Top South
+    400052: Gable Steps
+    400054: GalleryBottom
+    400056: GalleryBottom Panels
+    400058: GalleryTop
+    400060: GATE
+    400062: Kapitel
+    400064: Moat
+    400066: Oriel A1
+    400068: Oriel A1 Panel
+    400070: Oriel A1 Roof
+    400072: Oriel A1.1
+    400074: Oriel A2
+    400076: Oriel A2 Panel
+    400078: Oriel A2 Roof
+    400080: Oriel A2.1
+    400082: Oriel B
+    400084: Oriel B Roof
+    400086: Oriel B.1
+    400088: Oriels
+    400090: Panel East
+    400092: Panel South
+    400094: Panels Bottom
+    400096: PanelsCone
+    400098: Plan centre
+    400100: Plan cloister
+    400102: PM Panels
+    400104: PM Windows
+    400106: Rafters
+    400108: Roof B
+    400110: Roof left
+    400112: Roof right
+    400114: Scene
+    400116: Side rails
+    400118: Signature
+    400120: Thumbs
+    400122: Top
+    400124: TOWER 1
+    400126: TOWER 2
+    400128: TOWER 3
+    400130: Tower 8Gon front
+    400132: Tower 8Gon middle
+    400134: Tower 8Gon rear
+    400136: Towers Gate
+    400138: Vaults
+    400140: Voussoirs
+    400142: WALL
+    400144: Wall
+    400146: Windows Bottom
+    400148: WindowsCone
+    400150: Wireframes
+    2300000: Block low
+    2300002: Block low Roof
+    2300004: Box
+    2300006: Columns
+    2300008: Cone
+    2300010: Crennelation
+    2300012: Crennelation.1
+    2300014: Cross Beam
+    2300016: Deck
+    2300018: Doorway
+    2300020: DummyLight
+    2300022: Eaves B
+    2300024: Embrasure
+    2300026: Embrasures
+    2300028: Embrasures.1
+    2300030: Embrasures.2
+    2300032: Frames Top East
+    2300034: Frames Top South
+    2300036: Gable Steps
+    2300038: GalleryBottom
+    2300040: GalleryBottom Panels
+    2300042: GalleryTop
+    2300044: Kapitel
+    2300046: Moat
+    2300048: Oriel A1 Panel
+    2300050: Oriel A1 Roof
+    2300052: Oriel A1.1
+    2300054: Oriel A2 Panel
+    2300056: Oriel A2 Roof
+    2300058: Oriel A2.1
+    2300060: Oriel B Roof
+    2300062: Oriel B.1
+    2300064: Oriels
+    2300066: Panel East
+    2300068: Panel South
+    2300070: Panels Bottom
+    2300072: PanelsCone
+    2300074: Plan centre
+    2300076: Plan cloister
+    2300078: PM Panels
+    2300080: PM Windows
+    2300082: Rafters
+    2300084: Roof B
+    2300086: Roof left
+    2300088: Roof right
+    2300090: Scene
+    2300092: Side rails
+    2300094: Top
+    2300096: Tower 8Gon front
+    2300098: Tower 8Gon middle
+    2300100: Tower 8Gon rear
+    2300102: Towers Gate
+    2300104: Vaults
+    2300106: Voussoirs
+    2300108: Wall
+    2300110: Windows Bottom
+    2300112: WindowsCone
+    3300000: Block low
+    3300002: Block low Roof
+    3300004: Box
+    3300006: Columns
+    3300008: Cone
+    3300010: Crennelation
+    3300012: Crennelation.1
+    3300014: Cross Beam
+    3300016: Deck
+    3300018: Doorway
+    3300020: DummyLight
+    3300022: Eaves B
+    3300024: Embrasure
+    3300026: Embrasures
+    3300028: Embrasures.1
+    3300030: Embrasures.2
+    3300032: Frames Top East
+    3300034: Frames Top South
+    3300036: Gable Steps
+    3300038: GalleryBottom
+    3300040: GalleryBottom Panels
+    3300042: GalleryTop
+    3300044: Kapitel
+    3300046: Moat
+    3300048: Oriel A1 Panel
+    3300050: Oriel A1 Roof
+    3300052: Oriel A1.1
+    3300054: Oriel A2 Panel
+    3300056: Oriel A2 Roof
+    3300058: Oriel A2.1
+    3300060: Oriel B Roof
+    3300062: Oriel B.1
+    3300064: Oriels
+    3300066: Panel East
+    3300068: Panel South
+    3300070: Panels Bottom
+    3300072: PanelsCone
+    3300074: Plan centre
+    3300076: Plan cloister
+    3300078: PM Panels
+    3300080: PM Windows
+    3300082: Rafters
+    3300084: Roof B
+    3300086: Roof left
+    3300088: Roof right
+    3300090: Scene
+    3300092: Side rails
+    3300094: Top
+    3300096: Tower 8Gon front
+    3300098: Tower 8Gon middle
+    3300100: Tower 8Gon rear
+    3300102: Towers Gate
+    3300104: Vaults
+    3300106: Voussoirs
+    3300108: Wall
+    3300110: Windows Bottom
+    3300112: WindowsCone
+    4300000: Scene
+    4300002: Moat
+    4300004: DummyLight
+    4300006: Wall
+    4300008: Top
+    4300010: Doorway
+    4300012: Voussoirs
+    4300014: Towers Gate
+    4300016: Embrasure
+    4300018: GalleryTop
+    4300020: GalleryBottom
+    4300022: GalleryBottom Panels
+    4300024: Roof left
+    4300026: Roof right
+    4300028: Side rails
+    4300030: Deck
+    4300032: Cross Beam
+    4300034: Tower 8Gon front
+    4300036: Embrasures
+    4300038: Crennelation
+    4300040: Tower 8Gon middle
+    4300042: Embrasures.2
+    4300044: Cone
+    4300046: Oriels
+    4300048: WindowsCone
+    4300050: PanelsCone
+    4300052: Tower 8Gon rear
+    4300054: Embrasures.1
+    4300056: Crennelation.1
+    4300058: Plan cloister
+    4300060: Plan centre
+    4300062: Vaults
+    4300064: Columns
+    4300066: Kapitel
+    4300068: Block low Roof
+    4300070: Rafters
+    4300072: Block low
+    4300074: Oriel A1 Panel
+    4300076: Oriel A2 Panel
+    4300078: PM Panels
+    4300080: PM Windows
+    4300082: Oriel A1 Roof
+    4300084: Oriel A1.1
+    4300086: Oriel A2 Roof
+    4300088: Oriel A2.1
+    4300090: Roof B
+    4300092: Eaves B
+    4300094: Gable Steps
+    4300096: Box
+    4300098: Windows Bottom
+    4300100: Panels Bottom
+    4300102: Frames Top East
+    4300104: Panel East
+    4300106: Frames Top South
+    4300108: Panel South
+    4300110: Oriel B Roof
+    4300112: Oriel B.1
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

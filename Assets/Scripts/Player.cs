@@ -6,6 +6,7 @@ using UnityEngine.Networking;
 public class Player : MonoBehaviour {
 
 	public int team = 0;
+	public int cost = 5;
 	public List<Unit> playerUnits;
 	public string status = "Alive";
 	public Hexagon castlePosition;
@@ -30,15 +31,15 @@ public class Player : MonoBehaviour {
 			}
 
 			this.network.SendLoseStatusMessage(this.team);
-			//TODO: Add all player unit hp to 0 disable userinterface show lose and back button
-			//maybe send status to server
 			if(this.status == "Lose"){
 				this.mainGame.SetActive(false);
 			}
 		}
+
 	}
 
 	void OnGUI(){
         GUI.Label(new Rect(2, 10, 150, 100), "Team:"+this.team);
+		GUI.Label(new Rect(102, 10, 150, 100), "Cost:"+this.cost);
 	}
 }

@@ -10,15 +10,21 @@ using Newtonsoft.Json;
 
 public class Database : MonoBehaviour {
 	//public DatabaseReference reference;
-	public Dictionary<string, Status> unitStatus;
+	public Dictionary<string, Status> status;
+	public Dictionary<string, SkillStatus> skill;
 
 	public void ReadUnitStatus(){
 		TextAsset file = Resources.Load<TextAsset>("Files/Units");
-		this.unitStatus = JsonConvert.DeserializeObject<Dictionary<string, Status>>(file.ToString());
+		this.status = JsonConvert.DeserializeObject<Dictionary<string, Status>>(file.ToString());
+	}
+
+	public void ReadSkillStatus(){
+		TextAsset file = Resources.Load<TextAsset>("Files/Skills");
+		this.skill = JsonConvert.DeserializeObject<Dictionary<string, SkillStatus>>(file.ToString());
 	}
 
 	public Status GetUnitStatus(string unit){
-		return this.unitStatus[unit];
+		return this.status[unit];
 	}
 
 	/*public Task<DataSnapshot> ReadAll(string query){

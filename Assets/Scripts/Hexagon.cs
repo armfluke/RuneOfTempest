@@ -38,6 +38,21 @@ public class Hexagon : MonoBehaviour  {
 		this.y = y;
 		this.z = z;
 	}
+
+	public Vector3 ToVector3(){
+		return new Vector3(this.x, this.y, this.z);
+	}
+
+	public bool Compare(Hexagon hexagon){
+		if(this.x == hexagon.x && this.y == hexagon.y && this.z == hexagon.z){
+			return true;
+		}
+		return false;
+	}
+
+	public static Hexagon ToHexagon(Vector3 hexagon){
+		return new Hexagon((int)hexagon.x, (int)hexagon.y, (int)hexagon.z);
+	}
 }
 
 public class Cube {

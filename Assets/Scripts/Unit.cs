@@ -12,9 +12,9 @@ public class Unit : MonoBehaviour {
 	public int hp;
 	public Status status;
 	public string state = "Idle";
-	Hexagon hexagon;
+	public int cooldown = 0;
 	Vector3 targetPosition;
-	RaycastHit hitInfo;
+	//RaycastHit hitInfo;
 	bool attacking = false;
 	Animator animator;
 	Vector3 different;
@@ -26,6 +26,8 @@ public class Unit : MonoBehaviour {
 	public GameMechanic gameMechanic;
 	public Player player;
 	public Dictionary<string ,GameObject> unitState = new Dictionary<string, GameObject>();
+	private Cube cube;
+	private Database database;
 
 	public float CalculateDifferentAngle(){
 		//Calculate rotation angle
@@ -85,12 +87,42 @@ public class Unit : MonoBehaviour {
 
 		this.frameAttacking = 0;
 
-		target.hp -= this.status.attack;
-		//Checking if unit died
+		int additionalDamage = 0;
+		//Check skill before final damage
+		foreach(string skill in this.status.skill){
+			switch(skill){
+				case "Swordmanship":
+					additionalDamage += this.database.skill[skill].damage;
+					break;
+				case "Archery":
+					//Check if target unit is neighbor
+					bool checkNeighbor = false;
+					Hexagon[] neighbor = this.cube.Neighbor(this.position);
+					foreach(Hexagon tile in neighbor){
+						if(target.position.Compare(tile)){
+							checkNeighbor = true;
+						}
+					}
+
+					//If target unit is not close this unit add damage
+					if(checkNeighbor == false){
+						additionalDamage += this.database.skill[skill].damage;
+					}
+					break;
+				case "DivineShield":
+					if(this.status.attack - this.database.skill[skill].damage > 0){
+						additionalDamage -= this.database.skill[skill].damage;
+					}
+					break;
+				default:
+					break;
+			}
+		}
+		target.hp -= this.status.attack + additionalDamage;
 	}
 
 	private bool isCoroutineExecuting = false;
-	IEnumerator ExecuteAfterTime(float time){
+	/*IEnumerator ExecuteAfterTime(float time){
 		//Check if coroutine is already execute
 		if(isCoroutineExecuting){
 			yield break;
@@ -99,32 +131,10 @@ public class Unit : MonoBehaviour {
 		//Wait For seconds
 		yield return new WaitForSeconds(time);
 		// Code to execute after the delay
-		int index = 0;
-			if(this.team == this.player.team){
-				foreach(Unit unit in this.player.playerUnits){
-					if(unit.unitName == this.unitName){
-						this.player.playerUnits.RemoveAt(index);
-						break;
-					}
-					index++;
-				}
-			}
-
-			index = 0;
-			foreach(Unit unit in this.gameMechanic.unit){
-				if(unit.unitName == this.unitName){
-					this.gameMechanic.unit.RemoveAt(index);
-					break;
-				}
-				index++;
-			}
-
-			Destroy(gameObject);
 
 		isCoroutineExecuting = false;
 	}
-	//StartCoroutine(ExecuteAfterTime(3f));
-
+	StartCoroutine(ExecuteAfterTime(3f));*/
 	private void Attacking(){
 		this.frameAttacking++;
 		if(frameAttacking <= 15){
@@ -132,20 +142,7 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	public void Defend(){
-		this.state = "Defend";
-		Debug.Log(this.unitName + " Defend");
-	}
-
-	IEnumerator DelayBeforeDie(float time){
-		//Check if coroutine is already execute
-		if(isCoroutineExecuting){
-			yield break;
-		}
-		isCoroutineExecuting = true;
-		//Wait For seconds
-		yield return new WaitForSeconds(time);
-		// Code to execute after the delay
+	public void Die(){
 		GameObject miniMap = GameObject.Find("UserInterface").transform.Find("MiniMap").Find("MiniMap").gameObject;
 		GameObject unitImage = miniMap.transform.Find(position.x+","+position.y+","+position.z).Find(this.unitName).gameObject;
 		Destroy(unitImage);
@@ -171,6 +168,23 @@ public class Unit : MonoBehaviour {
 		}
 
 		Destroy(gameObject);
+	}
+
+	public void Defend(){
+		this.state = "Defend";
+		Debug.Log(this.unitName + " Defend");
+	}
+
+	IEnumerator DelayBeforeDie(float time){
+		//Check if coroutine is already execute
+		if(isCoroutineExecuting){
+			yield break;
+		}
+		isCoroutineExecuting = true;
+		//Wait For seconds
+		yield return new WaitForSeconds(time);
+		// Code to execute after the delay
+		Die();
 
 		isCoroutineExecuting = false;
 	}
@@ -182,6 +196,8 @@ public class Unit : MonoBehaviour {
 		this.animator = transform.Find(this.unitName).GetComponent<Animator>();
 		this.healthBar = transform.Find("Health").Find("Background").Find("Foreground").GetComponent<RectTransform>();
 		this.healthText = transform.Find("Health").Find("Text").GetComponent<Text>();
+		this.cube = new Cube();
+		this.database = GameObject.Find("GameMechanic").GetComponent<Database>();
 
 		Transform stateObject = transform.Find("Health").Find("State");
 		//Get each game object state
@@ -192,6 +208,9 @@ public class Unit : MonoBehaviour {
 		this.unitState["Skill"] = stateObject.Find("Skill").gameObject;
 		this.unitState["Rest"] = stateObject.Find("Rest").gameObject;
 		this.unitState["Die"] = stateObject.Find("Die").gameObject;
+		this.unitState["Stun"] = stateObject.Find("Stun").gameObject;
+		this.unitState["Freeze"] = stateObject.Find("Freeze").gameObject;
+		this.unitState["Stealth"] = stateObject.Find("Stealth").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -204,7 +223,8 @@ public class Unit : MonoBehaviour {
 		Moving();
 		//Attacking unit
 		Attacking();
-
+		
+		//If hp <= 0 unit die
 		if(this.hp <= 0){
 			this.hp = 0;
 			this.animator.SetTrigger("Die");
@@ -212,6 +232,7 @@ public class Unit : MonoBehaviour {
 			Debug.Log(this.unitName + " died");
 		}
 
+		//Change state sign to current unit state
 		foreach(KeyValuePair<string, GameObject> entry in this.unitState){
 			if(entry.Value.name == this.state){
 				entry.Value.SetActive(true);

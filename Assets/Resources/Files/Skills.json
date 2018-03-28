@@ -1,0 +1,90 @@
+{
+    "Havesting": {
+        "name": "Havesting",
+        "type": "Passive",
+        "range": 0,
+        "damage": 1,
+        "cooldown": 0,
+        "description": "Increase cost by 1 at the end of the turn"
+    },
+    "Swordmanship": {
+        "name": "Swordmanship",
+        "type": "Passive",
+        "range": 0,
+        "damage": 1,
+        "cooldown": 0,
+        "description": "Increase damage by 1"
+    },
+    "KnightSpirit": {
+        "name": "KnightSpirit",
+        "type": "Active",
+        "range": 1,
+        "damage": 8,
+        "cooldown": 2,
+        "description": "Deal heavy damage to a single target unit"
+    },
+    "DivineShield": {
+        "name": "DivineShield",
+        "type": "Passive",
+        "range": 0,
+        "damage": 2,
+        "cooldown": 0,
+        "description": "Reduce all incoming damage by 2"
+    },
+    "Archery": {
+        "name": "Archery",
+        "type": "Passive",
+        "range": 0,
+        "damage": 1,
+        "cooldown": 0,
+        "description": "If attacked unit is not close to this unit damage increase by 1"
+    },
+    "Stealth": {
+        "name": "Stealth",
+        "type": "Active",
+        "range": 0,
+        "damage": 0,
+        "cooldown": 2,
+        "description": "Can't be target for 1 turn (Not including AOE skill)"
+    },
+    "DoubleAttack": {
+        "name": "DoubleAttack",
+        "type": "Active",
+        "range": 3,
+        "damage": 8,
+        "cooldown": 2,
+        "description": "Deal damage to enemy and reset state to Idle"
+    },
+    "Freeze": {
+        "name": "Freeze",
+        "type": "Active",
+        "range": 3,
+        "damage": 6,
+        "cooldown": 2,
+        "description": "Deal damage and freeze target unit by 1 turn"
+    },
+    "Heal": {
+        "name": "Heal",
+        "type": "Active",
+        "range": 1,
+        "damage": 2,
+        "cooldown": 1,
+        "description": "Heal all unit close this unit by 2 hp"
+    },
+    "Slam": {
+        "name": "Slam",
+        "type": "Active",
+        "range": 1,
+        "damage": 0,
+        "cooldown": 3,
+        "description": "Stun all enemies unit close to this unit by 1 turn"
+    },
+    "DragonBreath": {
+        "name": "DragonBreath",
+        "type": "Active",
+        "range": 2,
+        "damage": 4,
+        "cooldown": 3,
+        "description": "Deal damage to all target unit in AOE"
+    }
+}

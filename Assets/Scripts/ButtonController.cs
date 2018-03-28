@@ -29,25 +29,22 @@ public class ButtonController : MonoBehaviour {
 					this.unit = null;
 				}
 			}
-
-			/*if(this.drivers != null){
-				Transform unitObject = this.drivers.transform.Find(gameObject.name + " Team" + this.player.team);
-				if(unitObject != null){
-					this.unit = unitObject.GetComponent<Unit>();
-				}else{
-					this.unit = null;
-				}
-			}*/
 		}
 
 		if(this.unit == null){
+			//disable buton if unit is null
 			this.button.interactable = false;
 		}else{
+			//enable button if unit can do action else disable
 			if(this.unit.state == "Idle" || this.unit.state == "Move"){
 				this.button.interactable = true;
 			}else{
 				this.button.interactable = false;
 			}
+
+			transform.Find("Image").GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Units/" + unit.status.type);
 		}
+
+
 	}
 }
