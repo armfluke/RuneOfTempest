@@ -11,6 +11,8 @@ public class Generator : MonoBehaviour {
 	private Player player;
 	private int countTeam = 0;
 	public GameObject drivers;
+	public GameObject[] maps;
+	public GameObject[] environments;
 
 	private Hexagon[][] positionForEachTeam = new Hexagon[][]{
 		new Hexagon[]{new Hexagon(-6,-1,7), new Hexagon(-5,-2,7), new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), new Hexagon(-7,2,5), new Hexagon(-7,1,6)},
@@ -22,11 +24,21 @@ public class Generator : MonoBehaviour {
 	//Generate map and return map gameobject
 	public GameObject GenerateMap(){
 		//Instantiate map
-		GameObject mapPrefab = (GameObject)Resources.Load("Prefabs/Map", typeof(GameObject));
+		/*GameObject mapPrefab = (GameObject)Resources.Load("Prefabs/Map", typeof(GameObject));
 		GameObject map = (GameObject)Instantiate(mapPrefab, new Vector3(0, 0, 0), Quaternion.identity);
 		map.name = "Map";
-		map.transform.parent = GameObject.Find("Drivers").transform;
-		//map.transform.parent = mapObject.transform;
+		map.transform.parent = GameObject.Find("Drivers").transform;*/
+
+		System.Random random = new System.Random();
+		int mapNumber = random.Next(0, 3);
+		
+		GameObject map = (GameObject)Instantiate(this.maps[mapNumber], new Vector3(0, 0, 0), Quaternion.identity);
+		map.name = "Map";
+		map.transform.parent = this.drivers.transform;
+
+		GameObject environment = (GameObject)Instantiate(this.environments[mapNumber], new Vector3(0, 0, 0), Quaternion.identity);
+		environment.name = "Environment";
+		environment.transform.parent = this.drivers.transform;
 
 		//Attach Hexagon sript and coordinate to each tile ***For adding new tile
 		/*int count = map.transform.childCount;

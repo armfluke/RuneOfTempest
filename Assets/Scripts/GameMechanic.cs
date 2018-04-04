@@ -57,6 +57,9 @@ public class GameMechanic : MonoBehaviour {
 		this.turnManager.time = 90f;
 		this.turnManager.turn = 1;
 		this.player.status = "Alive";
+
+		this.map = this.generator.GenerateMap();
+
 		this.generator.GenerateUnitForEachTeam();
 	}
 
