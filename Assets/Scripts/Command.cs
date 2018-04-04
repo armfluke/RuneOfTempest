@@ -26,11 +26,11 @@ public class Command : MonoBehaviour {
 			unitImage.sprite = Resources.Load<Sprite>("Images/Units/" + unit.status.type);
 			//Change description to selected unit
 			Transform description = unitDetails.transform.Find("Description");
-			description.Find("Class").GetComponent<Text>().text = "Class: " + unit.status.type;
-			description.Find("Hp").GetComponent<Text>().text = "Hp: " + unit.hp + "/" + unit.status.maxHp;
-			description.Find("Move").GetComponent<Text>().text = "Move: " + unit.status.move;
-			description.Find("Attack").GetComponent<Text>().text = "Attack: " + unit.status.attack;
-			description.Find("Range").GetComponent<Text>().text = "Range: " + unit.status.range;
+			description.Find("Class").GetComponent<Text>().text = unit.status.type;
+			description.Find("Hp").GetComponent<Text>().text = unit.hp + "/" + unit.status.maxHp;
+			description.Find("Move").GetComponent<Text>().text = unit.status.move.ToString();
+			description.Find("Attack").GetComponent<Text>().text = unit.status.attack.ToString();
+			description.Find("Range").GetComponent<Text>().text = unit.status.range.ToString();
 			string skill = "";
 			for(int i=0; i<unit.status.skill.Length; i++){
 				if(i == 0){

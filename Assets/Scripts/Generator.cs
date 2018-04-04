@@ -152,6 +152,7 @@ public class Generator : MonoBehaviour {
 		imageObject.transform.SetParent(tile);
 		imageObject.GetComponent<RectTransform>().position = tile.GetComponent<RectTransform>().position;
 		imageObject.transform.localScale = new Vector3(1, 1, 1);
+		imageObject.GetComponent<RectTransform>().sizeDelta = new Vector2(70, 70);
 		
 		//Create diamonds to identify team on minimap
 		sprite = Resources.Load<Sprite>("Images/Diamond");
