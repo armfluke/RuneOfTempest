@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
 
@@ -14,6 +15,8 @@ public class Player : MonoBehaviour {
 	public GameMechanic gameMechanic;
 	public Network network;
 	public GameObject mainGame;
+	public Text teamText;
+	public Text costText;
 
 	// Use this for initialization
 	void Start () {
@@ -36,10 +39,13 @@ public class Player : MonoBehaviour {
 			}
 		}
 
+		//Add status to game status
+		this.teamText.text = this.team.ToString();
+		this.costText.text = this.cost.ToString();
 	}
 
-	void OnGUI(){
+	/*void OnGUI(){
         GUI.Label(new Rect(2, 10, 150, 100), "Team:"+this.team);
 		GUI.Label(new Rect(102, 10, 150, 100), "Cost:"+this.cost);
-	}
+	}*/
 }

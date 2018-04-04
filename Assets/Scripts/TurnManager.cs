@@ -34,9 +34,9 @@ public class TurnManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		this.turnText.text = "Turn: " + this.turn;
-		this.currentTeamTurnText.text = "Current team: " + this.currentTeamTurn;
-		this.timeText.text = "Time: " + (int)this.time;
+		this.turnText.text = this.turn.ToString();
+		this.currentTeamTurnText.text = this.currentTeamTurn.ToString();
+		this.timeText.text = ((int)this.time).ToString();
 		this.time -= Time.deltaTime;
 		this.network.SendTurnMessage(this.time, this.currentTeamTurn);
 
