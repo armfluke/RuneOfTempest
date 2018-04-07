@@ -13,6 +13,9 @@ public class Generator : MonoBehaviour {
 	public GameObject drivers;
 	public GameObject[] maps;
 	public GameObject[] environments;
+	private Vector3[] startAngle = new Vector3[]{
+		new Vector3(0, 225, 0), new Vector3(0, 135, 0), new Vector3(0, 45, 0), new Vector3(0, 315, 0)
+	};
 
 	private Hexagon[][] positionForEachTeam = new Hexagon[][]{
 		new Hexagon[]{new Hexagon(-6,-1,7), new Hexagon(-5,-2,7), new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), new Hexagon(-7,2,5), new Hexagon(-7,1,6)},
@@ -196,14 +199,8 @@ public class Generator : MonoBehaviour {
 		for(int i = 0; i < GameMechanic.MAX_PLAYER; i++){
 			int index = 0;
 			foreach(Hexagon position in positionForEachTeam[i]){
-
-				/* */
-				/*if(index >= 1){
-					break;
-				}*/
-				/* */
-				
 				Unit unit = GenerateUnit("Villager", "Unit" + (index+1) + " Team" + (i+1), (i+1), position);
+				unit.transform.eulerAngles = startAngle[i];
 				index++;
 			}
 		}

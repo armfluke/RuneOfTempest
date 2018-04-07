@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 public class TurnManager : MonoBehaviour {
 
-	public const float TIME_PER_TURN = 90f;
+	public const float TIME_PER_TURN = 120f;
 	public int turn = 1;
 	public int currentTeamTurn = 1;
 	public float time;
