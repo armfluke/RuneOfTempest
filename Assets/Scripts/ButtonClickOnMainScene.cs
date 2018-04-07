@@ -20,10 +20,12 @@ public class ButtonClickOnMainScene : MonoBehaviour {
         SceneManager.LoadScene("Story");
     }
 
-    public void OnClickLogOut()
-    {
+    public void OnClickLogOut(){
+        if(PlayerPrefs.HasKey("UserData")){
+            PlayerPrefs.DeleteKey("UserData");
+        }
         //change to login scene
-        //SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Login");
     }
 
     public void OnClickBackToMainPage()

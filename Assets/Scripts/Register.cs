@@ -21,16 +21,17 @@ public class Register : MonoBehaviour {
 
     public Text ErrorRegisterMessage;
     public string newErrorMessageTwo = "";
+    //public GameObject errorPanel;
 
     public void RegisterButtonClick()
     {
-        UserInformation newuser = new UserInformation(username.GetComponent<InputField>().text, password.GetComponent<InputField>().text, confirmPassword.GetComponent<InputField>().text, email.GetComponent<InputField>().text);
+        UserInformation newuser = new UserInformation(username.GetComponent<InputField>().text.ToLower(), password.GetComponent<InputField>().text.ToLower(), email.GetComponent<InputField>().text.ToLower());
         ValidateRegister(newuser);
     }
 
     public Task<DataSnapshot> ReadData()
     {
-        return FirebaseDatabase.DefaultInstance.GetReference("User Data").GetValueAsync();
+        return FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync();
     }
 
     private void ValidateRegister(UserInformation newuser)
@@ -66,13 +67,13 @@ public class Register : MonoBehaviour {
                     }
                 }
 
-                if(newuser.username == "" || newuser.password == "" || newuser.confirmPassword == "" || newuser.email == "")
+                if(newuser.username == "" || newuser.password == "" || confirmPassword.GetComponent<InputField>().text == "" || newuser.email == "")
                 {
                     Debug.Log("False it's empty");
                     newErrorMessageTwo = "You forget to input data in some field please try again!";
                     flag = false;
                 }
-                else if(string.Compare(newuser.password, newuser.confirmPassword) != 0)
+                else if(newuser.password != confirmPassword.GetComponent<InputField>().text.ToLower())
                 {
                     Debug.Log("Password and confirm password are not matched try again!");
                     newErrorMessageTwo = "Password and confirm password are not matched try again!";
@@ -80,19 +81,18 @@ public class Register : MonoBehaviour {
                 }
                 Debug.Log("Print Flag" + flag);
 
-                if (flag == true)
-                {
+                if (flag == true){
                     //Write data
                     string json = JsonUtility.ToJson(newuser); //to convert object to raw json
                     Debug.Log(json);
-                    string key = this.reference.Child("User Data").Push().Key;
+                    string key = this.reference.Child("UserData").Push().Key;
                     Debug.Log("Key at register" + key);
-                    this.reference.Child("User Data").Child(newuser.username).SetRawJsonValueAsync(json); //key
-                                                                                                          //popup window to remind them register successful!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    this.reference.Child("UserData").Child(newuser.username).SetRawJsonValueAsync(json); //key
+                                                                                                         //popup window to remind them register successful!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    //Save username with playerprefs
+                    PlayerPrefs.SetString("UserData", newuser.username);
                     SceneManager.LoadScene("Main");
-                }
-                else
-                {
+                }else{
                     ErrorRegisterMessage.text = newErrorMessageTwo;
                     GameObject.Find("LoginRegisterCanvas").transform.Find("ErrorRegisterPanel").gameObject.SetActive(true);
                 }

@@ -12,16 +12,15 @@ public class UserInformation : MonoBehaviour {
 
     public string username;
     public string password;
-    public string confirmPassword;
     public string email;
+    public int score;
     
 
-    public UserInformation(string username, string password, string confirmPassword, string email)
-    {
+    public UserInformation(string username, string password, string email){
         this.username = username;
         this.password = password;
-        this.confirmPassword = confirmPassword;
         this.email = email;
+        this.score = 0;
     }
 
     
@@ -29,14 +28,13 @@ public class UserInformation : MonoBehaviour {
 }
 
 
-public class UserInformationOldUser : MonoBehaviour{
+public class UsernamePassword : MonoBehaviour{
 
-    public string oldUsername;
-    public string oldPassword;
+    public string userName;
+    public string password;
 
-    public UserInformationOldUser(string oldUsername, string oldPassword)
-    {
-        this.oldUsername = oldUsername;
-        this.oldPassword = oldPassword;
+    public UsernamePassword(string username, string password){
+        this.userName = username;
+        this.password = password;
     }
 }

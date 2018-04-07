@@ -26,9 +26,8 @@ public class Login : MonoBehaviour {
     public Text ErrorLoginMessage;
     public string newErrorMessage = "";
 
-    public void LoginButtonClick()
-    {
-       UserInformationOldUser userdata = new UserInformationOldUser(oldUsername.GetComponent<InputField>().text, oldPassword.GetComponent<InputField>().text);
+    public void LoginButtonClick(){
+        UsernamePassword userdata = new UsernamePassword(oldUsername.GetComponent<InputField>().text.ToLower(), oldPassword.GetComponent<InputField>().text.ToLower());
         SearchUserData(userdata);
     }
 
@@ -110,71 +109,71 @@ public class Login : MonoBehaviour {
         });
     }*/
 
-    public Task<DataSnapshot> ReadData()
-    {
-        return FirebaseDatabase.DefaultInstance.GetReference("User Data").GetValueAsync();
+    public Task<DataSnapshot> ReadData(){
+        return FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync();
     }
 
-    public void SearchUserData(UserInformationOldUser userdata)
-    {
+    public void SearchUserData(UsernamePassword userdata){
         //read data
-        ReadData().ContinueWith(task =>
-        {
+        ReadData().ContinueWith(task => {
             bool flag = false;
-            if (task.IsFaulted)
-            {
+            if (task.IsFaulted){
                 // Handle the error...
                 Debug.Log("Error to read data from firebase database");
 
-            }
-            else if (task.IsCompleted)
-            {
+            }else if (task.IsCompleted){
                 DataSnapshot snapshot = task.Result;
                 //read all key
                 IDictionary test = (IDictionary)snapshot.Value;
                 //loop for to check if new username is 
-                foreach (string key in test.Keys)
-                {
-                    if(userdata.oldUsername == key)
-                    {
-                        Debug.Log("YO IS MATCHED!!"+ snapshot.Child(key).Child("password").GetValue(true));
-                        if (userdata.oldPassword == (snapshot.Child(key).Child("password").GetValue(true).ToString()))
-                        {
-                            Debug.Log("ALLLLLLLLLLLL IS MATCHED!!");
+                foreach (string key in test.Keys){
+
+                    if(userdata.userName == key){
+                        Debug.Log("Username is matched");
+                        //Debug.Log("YO IS MATCHED!!"+ snapshot.Child(key).Child("password").GetValue(true));
+                        if (userdata.password == (snapshot.Child(key).Child("password").GetValue(true).ToString())){
+                            Debug.Log("Password is matched");
                             flag = true;
+                            PlayerPrefs.SetString("UserData", key);
                         }
-                        else
-                        {
+                        else{
                             flag = false;
                             newErrorMessage = "Username and password is incorrect please try again";
                         }
                     }
                 }
+
                 //check input login in null
-                if(userdata.oldUsername == "" && userdata.oldPassword == "")
-                {
+                if(userdata.userName == "" && userdata.password == ""){
                     flag = false;
                 }
                 ErrorLoginMessage.text = newErrorMessage;
 
 
             }
-            if (flag == true)
-            {
+            if (flag == true){
                 Debug.Log("successful log in!!");
                 //change scene
                 SceneManager.LoadScene("Main");
-            }
-            else
-            {
+            }else{
                 GameObject.Find("LoginRegisterCanvas").transform.Find("ErrorLoginPanel").gameObject.SetActive(true);
             }
 
         });
 
     }
+
+    public void CheckLogin(){
+        if(PlayerPrefs.HasKey("UserData")){
+            //TODO: Get user information from database///////////////////////////////////////////////////////////////////////////////////
+            SceneManager.LoadScene("Main");
+        }
+    }
+
     // Use this for initialization
     void Start () {
+        CheckLogin();
+
         // Set up the Editor before calling into the realtime database.
         FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://rune-of-tempest.firebaseio.com/");
 
@@ -183,7 +182,6 @@ public class Login : MonoBehaviour {
 
         //initiate auth
         Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
-        //Awake();
     }
 	
 	// Update is called once per frame
