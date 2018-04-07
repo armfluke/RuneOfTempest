@@ -18,6 +18,7 @@ public class WinCondition : MonoBehaviour {
 	public bool[] checkCastleConquer = new bool[]{false, false, false, false};
 	public Unit[] castleConquerUnit = new Unit[4];
 	public bool[] playerLoseStatus = new bool[]{false, false, false, false};
+	public Text[] conquerCount;
 
 	public void OnSpectateClicked(){
 		
@@ -118,12 +119,16 @@ public class WinCondition : MonoBehaviour {
 				}
 			}
 		}
+
+		for(int i = 0; i < conquerCount.Length; i++){
+			conquerCount[i].text = this.castleConquerCount[i].ToString();
+		}
 	}
 
-	void OnGUI(){
+	/*void OnGUI(){
 		GUI.Label(new Rect(2, 30, 150, 100), "Conquer count team1: " + this.castleConquerCount[0]);
         GUI.Label(new Rect(2, 50, 150, 100), "Conquer count team2: " + this.castleConquerCount[1]);       
         GUI.Label(new Rect(2, 70, 150, 100), "Conquer count team3: " + this.castleConquerCount[2]);
 		GUI.Label(new Rect(2, 90, 150, 100), "Conquer count team4: " + this.castleConquerCount[3]);
-	}
+	}*/
 }
