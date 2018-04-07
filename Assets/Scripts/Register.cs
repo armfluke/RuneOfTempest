@@ -8,6 +8,7 @@ using Firebase;
 using Firebase.Database;
 using Firebase.Unity.Editor;
 using System.Threading.Tasks;
+using UnityEngine.SceneManagement;
 
 public class Register : MonoBehaviour {
 
@@ -88,6 +89,7 @@ public class Register : MonoBehaviour {
                     Debug.Log("Key at register" + key);
                     this.reference.Child("User Data").Child(newuser.username).SetRawJsonValueAsync(json); //key
                                                                                                           //popup window to remind them register successful!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    SceneManager.LoadScene("Main");
                 }
                 else
                 {

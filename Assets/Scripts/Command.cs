@@ -96,16 +96,18 @@ public class Command : MonoBehaviour {
 				}
 			}*/
 			foreach(Transform child in this.classObject.transform){
-				bool foundedClass = false;
-				foreach(string availableClass in this.gameMechanic.selectedUnit.status.availableClass){
-					if(child.name == availableClass || child.name == "Back"){
-						foundedClass = true;
+				if(child.name != "Path"){
+					bool foundedClass = false;
+					foreach(string availableClass in this.gameMechanic.selectedUnit.status.availableClass){
+						if(child.name == availableClass || child.name == "Back"){
+							foundedClass = true;
+						}
 					}
-				}
-				if(foundedClass == true){
-					child.GetComponent<Button>().interactable = true;
-				}else{
-					child.GetComponent<Button>().interactable = false;
+					if(foundedClass == true){
+						child.GetComponent<Button>().interactable = true;
+					}else{
+						child.GetComponent<Button>().interactable = false;
+					}
 				}
 			}
 		}else{

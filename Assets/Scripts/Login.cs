@@ -10,6 +10,7 @@ using Firebase.Unity.Editor;
 using Firebase.Auth;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
 //using Facebook.Unity;
 
 public class Login : MonoBehaviour {
@@ -162,6 +163,7 @@ public class Login : MonoBehaviour {
             {
                 Debug.Log("successful log in!!");
                 //change scene
+                SceneManager.LoadScene("Main");
             }
             else
             {
