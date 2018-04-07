@@ -62,16 +62,6 @@ public class Generator : MonoBehaviour {
 	public Unit GenerateUnit(string unitType, string unitName, int team, Hexagon position){
 		GameMechanic gameMechanic = gameObject.GetComponent<GameMechanic>();
 		Vector3 origin = Vector3.zero;	//Default location if unit is not found
-		/*Debug.Log("1");
-		Debug.Log(GameObject.Find("Drivers"));
-		Debug.Log("2");
-		Debug.Log(GameObject.Find("Drivers").transform.Find("Map"));
-		Debug.Log("3");
-		Debug.Log(GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z));
-		Debug.Log("4");
-		Debug.Log(GameObject.Find("Drivers").transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
-				.position);
-		Debug.Log("5");*/
 		//Get position of tile to instantiate unit
 		origin = this.drivers.transform.Find("Map").Find(position.x + "," + position.y + "," + position.z)
 				.position + new Vector3(0, 0.5f, 0);

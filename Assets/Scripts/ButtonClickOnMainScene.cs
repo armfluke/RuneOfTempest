@@ -5,18 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class ButtonClickOnMainScene : MonoBehaviour {
 
-    public void OnClickStartGame()
-    {
+    public void OnClickStartGame(){
         SceneManager.LoadScene("Lobby");
     }
 
-    public void OnClickRules()
-    {
+    public void OnClickRules(){
         SceneManager.LoadScene("Rules");
     }
 
-    public void OnClickStory()
-    {
+    public void OnClickStory(){
         SceneManager.LoadScene("Story");
     }
 
@@ -24,12 +21,14 @@ public class ButtonClickOnMainScene : MonoBehaviour {
         if(PlayerPrefs.HasKey("UserData")){
             PlayerPrefs.DeleteKey("UserData");
         }
+        if(GameObject.Find("UserData") != null){
+            Destroy(GameObject.Find("UserData"));
+        }
         //change to login scene
         SceneManager.LoadScene("Login");
     }
 
-    public void OnClickBackToMainPage()
-    {
+    public void OnClickBackToMainPage(){
         SceneManager.LoadScene("Main");
     }
 }

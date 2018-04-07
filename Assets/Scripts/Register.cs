@@ -20,13 +20,13 @@ public class Register : MonoBehaviour {
     public GameObject confirmPassword;
 
     public Text ErrorRegisterMessage;
-    public string newErrorMessageTwo = "";
+    public string errorMessage = "";
     //public GameObject errorPanel;
 
     public void RegisterButtonClick()
     {
-        UserInformation newuser = new UserInformation(username.GetComponent<InputField>().text.ToLower(), password.GetComponent<InputField>().text.ToLower(), email.GetComponent<InputField>().text.ToLower());
-        ValidateRegister(newuser);
+        UserInformation userData = new UserInformation(username.GetComponent<InputField>().text.ToLower(), password.GetComponent<InputField>().text.ToLower(), email.GetComponent<InputField>().text.ToLower());
+        ValidateRegister(userData);
     }
 
     public Task<DataSnapshot> ReadData()
@@ -34,7 +34,7 @@ public class Register : MonoBehaviour {
         return FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync();
     }
 
-    private void ValidateRegister(UserInformation newuser)
+    private void ValidateRegister(UserInformation userRegisterData)
     {
         //read data
         ReadData().ContinueWith(task =>
@@ -44,7 +44,7 @@ public class Register : MonoBehaviour {
             {
                 // Handle the error...
                 Debug.Log("Error to read data from firebase database");
-                newErrorMessageTwo = "Error to read data from database";
+                errorMessage = "Error to read data from database";
                 flag = false;
             }
             else if (task.IsCompleted)
@@ -59,42 +59,51 @@ public class Register : MonoBehaviour {
                 foreach (string key in test.Keys)
                 {
                     Debug.Log(key);//print all key
-                    if(newuser.username==key)
+                    if(userRegisterData.username==key)
                     {
                         flag = false;
                         Debug.Log("This username already use");
-                        newErrorMessageTwo = "This username already use";
+                        errorMessage = "This username already use";
                     }
                 }
 
-                if(newuser.username == "" || newuser.password == "" || confirmPassword.GetComponent<InputField>().text == "" || newuser.email == "")
+                if(userRegisterData.username == "" || userRegisterData.password == "" || confirmPassword.GetComponent<InputField>().text == "" || userRegisterData.email == "")
                 {
                     Debug.Log("False it's empty");
-                    newErrorMessageTwo = "You forget to input data in some field please try again!";
+                    errorMessage = "You forget to input data in some field please try again!";
                     flag = false;
                 }
-                else if(newuser.password != confirmPassword.GetComponent<InputField>().text.ToLower())
+                else if(userRegisterData.password != confirmPassword.GetComponent<InputField>().text.ToLower())
                 {
                     Debug.Log("Password and confirm password are not matched try again!");
-                    newErrorMessageTwo = "Password and confirm password are not matched try again!";
+                    errorMessage = "Password and confirm password are not matched try again!";
                     flag = false;
                 }
                 Debug.Log("Print Flag" + flag);
 
                 if (flag == true){
                     //Write data
-                    string json = JsonUtility.ToJson(newuser); //to convert object to raw json
+                    string json = JsonUtility.ToJson(userRegisterData); //to convert object to raw json
                     Debug.Log(json);
                     string key = this.reference.Child("UserData").Push().Key;
                     Debug.Log("Key at register" + key);
-                    this.reference.Child("UserData").Child(newuser.username).SetRawJsonValueAsync(json); //key
+                    this.reference.Child("UserData").Child(userRegisterData.username).SetRawJsonValueAsync(json); //key
                                                                                                          //popup window to remind them register successful!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    //Save username with playerprefs
-                    PlayerPrefs.SetString("UserData", newuser.username);
+                    //Create UserData object to store user data
+                    GameObject userDataObject = (GameObject)Resources.Load("Prefabs/UserData");
+                    userDataObject = (GameObject)Instantiate(userDataObject, Vector3.zero, Quaternion.identity);
+                    userDataObject.name = "UserData";
+                    UserData userData = userDataObject.GetComponent<UserData>();
+                    userData.username = userRegisterData.username;
+                    userData.email = userRegisterData.email;
+                    userData.score = 0;
+                    
+                    //Store username to remember user login
+                    PlayerPrefs.SetString("UserData", userRegisterData.username);
                     SceneManager.LoadScene("Main");
                 }else{
-                    ErrorRegisterMessage.text = newErrorMessageTwo;
-                    GameObject.Find("LoginRegisterCanvas").transform.Find("ErrorRegisterPanel").gameObject.SetActive(true);
+                    ErrorRegisterMessage.text = errorMessage;
+                    GameObject.Find("LoginRegisterCanvas").transform.Find("ErrorPanel").gameObject.SetActive(true);
                 }
             }
         });
@@ -113,8 +122,6 @@ public class Register : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-            
-       
 
     }
 }

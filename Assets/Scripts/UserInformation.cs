@@ -30,11 +30,11 @@ public class UserInformation : MonoBehaviour {
 
 public class UsernamePassword : MonoBehaviour{
 
-    public string userName;
+    public string username;
     public string password;
 
     public UsernamePassword(string username, string password){
-        this.userName = username;
+        this.username = username;
         this.password = password;
     }
 }
