@@ -118,6 +118,9 @@ public class Unit : MonoBehaviour {
 					break;
 			}
 		}
+		if(target.state == "Defend"){
+			additionalDamage -= 1;
+		}
 		target.hp -= this.status.attack + additionalDamage;
 	}
 

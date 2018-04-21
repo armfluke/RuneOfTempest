@@ -84,7 +84,11 @@ public class Skill : MonoBehaviour {
 		foreach(Hexagon tile in range){ 
 			targetUnit = SearchUnit(tile);
 			if(targetUnit != null && targetUnit.team != unit.team){
-				targetUnit.hp -= this.database.skill["DragonBreath"].damage;
+				if(targetUnit.state == "Defend"){
+					targetUnit.hp -= this.database.skill["DragonBreath"].damage - 1;
+				}else{
+					targetUnit.hp -= this.database.skill["DragonBreath"].damage;
+				}
 			}
 		}
 	}
@@ -95,7 +99,11 @@ public class Skill : MonoBehaviour {
 	}
 
 	public void KnightSpirit(Unit target){
-		target.hp -= this.database.skill["KnightSpirit"].damage;
+		if(target.state == "Defend"){
+			target.hp -= this.database.skill["KnightSpirit"].damage -1;
+		}else{
+			target.hp -= this.database.skill["KnightSpirit"].damage;
+		}
 	}
 
 	public void Stealth(Unit unit){
@@ -131,7 +139,11 @@ public class Skill : MonoBehaviour {
 
 	public void Freeze(Unit targetUnit){
 		targetUnit.state = "Freeze";
-		targetUnit.hp -= 6;
+		if(targetUnit.state == "Defend"){
+			targetUnit.hp -= this.database.skill["KnightSpirit"].damage - 1;
+		}else{
+			targetUnit.hp -= this.database.skill["Freeze"].damage;
+		}
 	}
 
 	// Use this for initialization
