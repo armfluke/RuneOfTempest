@@ -16,7 +16,7 @@ public class Network : MonoBehaviour {
     const short LOSE = 1005;
     const short CLASS_CHANGE = 1006;
     const short SKILL = 1007;
-    private bool setting = true;
+    public bool setting = true;
     public NetworkManager networkManager;
     public int team = 1;
 
@@ -308,8 +308,8 @@ public class Network : MonoBehaviour {
     void Update(){
         //Register client handler
         //Debug.Log(NetworkServer.connections.Count);
-        if(this.networkManager.client != null && this.networkManager.client.isConnected && setting){
-            setting = false;
+        if(this.networkManager.client != null && this.networkManager.client.isConnected && this.setting){
+            this.setting = false;
             //Debug.Log("Register Client Handler");
             RequestForTeam();
             //this.networkManager.client.RegisterHandler(MsgType.Connect, OnClientConnected);

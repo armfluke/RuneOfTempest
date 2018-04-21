@@ -35,6 +35,7 @@ public class Player : MonoBehaviour {
 		this.mainGame = GameObject.Find("UserInterface").transform.Find("MainGame").gameObject;
 		this.userData = GameObject.Find("UserData").GetComponent<UserData>();
 		this.winCondition = GameObject.Find("GameMechanic").GetComponent<WinCondition>();
+
 	}
 	
 	// Update is called once per frame
@@ -47,6 +48,7 @@ public class Player : MonoBehaviour {
 
 			this.network.SendLoseStatusMessage(this.team);
 			this.mainGame.SetActive(false);
+			GameObject.Find("UserInterface").transform.Find("Lose").gameObject.SetActive(true);
 
 			//Update score
 			FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync().ContinueWith(task => {

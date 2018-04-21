@@ -34,31 +34,34 @@ public class WinCondition : MonoBehaviour {
 	}
 
 	public void OnLobbyClicked(){
-		SceneManager.LoadScene("Lobby");
 		MatchInfo matchInfo = this.networkManager.matchInfo;
-		this.networkManager.matchMaker.DropConnection(matchInfo.networkId, matchInfo.nodeId, 0, this.networkManager.OnDropConnection);
-		
-		//this.networkManager.StopHost();
+		//this.networkManager.matchMaker.DropConnection(matchInfo.networkId, matchInfo.nodeId, 0, this.networkManager.OnDropConnection);
+		this.networkManager.StopHost();
+
+		Destroy(GameObject.Find("NetworkManager"));
+		SceneManager.LoadScene("Lobby");
 	}
 
 	public void Win(int team){
 		GameObject win = GameObject.Find("UserInterface").transform.Find("Win").gameObject;
         win.transform.Find("WinText").GetComponent<Text>().text = "Player Team " + team + " Win!!!";
-		//Update score to database
-		FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync().ContinueWith(task => {
-			if (task.IsFaulted){
-                // Handle the error...
-                Debug.Log("Error to read data from firebase database");
-            }else if(task.IsCompleted){
-				DataSnapshot snapshot = task.Result;
-				IDictionary data = (IDictionary)snapshot.Value;
-				data = ((IDictionary)data[this.userData.username]);
-				UserInformation newData = new UserInformation(data["username"].ToString(), data["password"].ToString(), data["email"].ToString(), Int32.Parse(data["score"].ToString()) + 2);
-				string json = JsonUtility.ToJson(newData);
-				Debug.Log(json);
-				this.reference.Child("UserData").Child(this.userData.username).SetRawJsonValueAsync(json);
-			}
-		});
+		if(this.player.team == team){
+			//Update score to database
+			FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync().ContinueWith(task => {
+				if (task.IsFaulted){
+					// Handle the error...
+					Debug.Log("Error to read data from firebase database");
+				}else if(task.IsCompleted){
+					DataSnapshot snapshot = task.Result;
+					IDictionary data = (IDictionary)snapshot.Value;
+					data = ((IDictionary)data[this.userData.username]);
+					UserInformation newData = new UserInformation(data["username"].ToString(), data["password"].ToString(), data["email"].ToString(), Int32.Parse(data["score"].ToString()) + 2);
+					string json = JsonUtility.ToJson(newData);
+					Debug.Log(json);
+					this.reference.Child("UserData").Child(this.userData.username).SetRawJsonValueAsync(json);
+				}
+			});
+		}
 
 		win.SetActive(true);
 	}
