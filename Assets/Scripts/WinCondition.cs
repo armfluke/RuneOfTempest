@@ -5,20 +5,29 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking.Match;
+using Firebase;
+using Firebase.Unity.Editor;
+using Firebase.Database;
+using Newtonsoft.Json;
+using System;
 
 public class WinCondition : MonoBehaviour {
 
+	public DatabaseReference reference;
 	public Player player;
 	private TurnManager turnManager;
 	private int checkTurnChange;
 	private GameMechanic gameMechanic;
-	private Hexagon[] castlePosition;
+	private Hexagon[] castlePosition = new Hexagon[]{
+			new Hexagon(-7, 0, 7), new Hexagon(0, -7, 7), new Hexagon(7, 0, -7), new Hexagon(0, 7, -7)
+		};
 	private NetworkManager networkManager;
 	public int[] castleConquerCount = new int[]{0, 0, 0, 0};
 	public bool[] checkCastleConquer = new bool[]{false, false, false, false};
 	public Unit[] castleConquerUnit = new Unit[4];
 	public bool[] playerLoseStatus = new bool[]{false, false, false, false};
 	public Text[] conquerCount;
+	public UserData userData;
 
 	public void OnSpectateClicked(){
 		
@@ -35,20 +44,40 @@ public class WinCondition : MonoBehaviour {
 	public void Win(int team){
 		GameObject win = GameObject.Find("UserInterface").transform.Find("Win").gameObject;
         win.transform.Find("WinText").GetComponent<Text>().text = "Player Team " + team + " Win!!!";
+		//Update score to database
+		FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync().ContinueWith(task => {
+			if (task.IsFaulted){
+                // Handle the error...
+                Debug.Log("Error to read data from firebase database");
+            }else if(task.IsCompleted){
+				DataSnapshot snapshot = task.Result;
+				IDictionary data = (IDictionary)snapshot.Value;
+				data = ((IDictionary)data[this.userData.username]);
+				UserInformation newData = new UserInformation(data["username"].ToString(), data["password"].ToString(), data["email"].ToString(), Int32.Parse(data["score"].ToString()) + 2);
+				string json = JsonUtility.ToJson(newData);
+				Debug.Log(json);
+				this.reference.Child("UserData").Child(this.userData.username).SetRawJsonValueAsync(json);
+			}
+		});
+
 		win.SetActive(true);
 	}
 
 	// Use this for initialization
 	void Start () {
-		this.castlePosition = new Hexagon[]{
+		/*this.castlePosition = new Hexagon[]{
 			new Hexagon(-7, 0, 7), new Hexagon(0, -7, 7), new Hexagon(7, 0, -7), new Hexagon(0, 7, -7)
-		};
-
+		};*/
+		FirebaseApp.DefaultInstance.SetEditorDatabaseUrl("https://rune-of-tempest.firebaseio.com/");
+		this.reference = FirebaseDatabase.DefaultInstance.RootReference;
+		
 		this.networkManager = GameObject.Find("NetworkManager").GetComponent<NetworkManager>();
 		this.player = GameObject.Find("Player").GetComponent<Player>();
 		this.gameMechanic = gameObject.GetComponent<GameMechanic>();
 		this.turnManager = gameObject.GetComponent<TurnManager>();
 		this.checkTurnChange = this.turnManager.turn;
+		this.userData = GameObject.Find("UserData").GetComponent<UserData>();
+
 	}
 	
 	// Update is called once per frame

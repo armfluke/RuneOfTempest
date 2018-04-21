@@ -31,12 +31,16 @@ public class Command : MonoBehaviour {
 			description.Find("Move").GetComponent<Text>().text = unit.status.move.ToString();
 			description.Find("Attack").GetComponent<Text>().text = unit.status.attack.ToString();
 			description.Find("Range").GetComponent<Text>().text = unit.status.range.ToString();
+			description.Find("Cooldown").GetComponent<Text>().text = unit.cooldown.ToString();
 			string skill = "";
 			for(int i=0; i<unit.status.skill.Length; i++){
-				if(i == 0){
-					skill += unit.status.skill[i] + "(" + database.skill[unit.status.skill[i]].type + "): " + database.skill[unit.status.skill[i]].description;
+				if(i != 0){
+					skill += "\n";
+				}
+				if(database.skill[unit.status.skill[i]].type == "Active"){
+					skill += unit.status.skill[i] + "(" + database.skill[unit.status.skill[i]].type + ")(CD: " + database.skill[unit.status.skill[i]].cooldown + "): " + database.skill[unit.status.skill[i]].description;
 				}else{
-					skill += "\n" + unit.status.skill[i] + "(" + database.skill[unit.status.skill[i]].type + "): " + database.skill[unit.status.skill[i]].description;
+					skill += unit.status.skill[i] + "(" + database.skill[unit.status.skill[i]].type + "): " + database.skill[unit.status.skill[i]].description;
 				}
 			}
 			unitDetails.transform.Find("Skill").Find("Text").GetComponent<Text>().text = skill;
@@ -135,6 +139,15 @@ public class Command : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+		Database database = gameObject.GetComponent<Database>();
+		if(database != null){
+			if(this.gameMechanic.selectedUnit != null){
+				if(this.gameMechanic.selectedUnit.cooldown != 0 || database.skill[this.gameMechanic.selectedUnit.status.skill[0]].type == "Passive"){
+					this.userInterface.transform.Find("UnitDetails").Find("UseSkill").GetComponent<Button>().interactable = false;
+				}else{
+					this.userInterface.transform.Find("UnitDetails").Find("UseSkill").GetComponent<Button>().interactable = true;
+				}
+			}
+		}
 	}
 }

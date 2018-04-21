@@ -15,6 +15,12 @@ public class UserInformation : MonoBehaviour {
     public string email;
     public int score;
     
+     public UserInformation(string username, string password, string email, int score){
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.score = score;
+    }
 
     public UserInformation(string username, string password, string email){
         this.username = username;
