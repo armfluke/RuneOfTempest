@@ -17,6 +17,10 @@ public class ButtonClickOnMainScene : MonoBehaviour {
         SceneManager.LoadScene("Story");
     }
 
+    public void OnClickLeaderboard(){
+        SceneManager.LoadScene("Leaderboard");
+    }
+
     public void OnClickLogOut(){
         if(PlayerPrefs.HasKey("UserData")){
             PlayerPrefs.DeleteKey("UserData");
