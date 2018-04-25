@@ -18,12 +18,12 @@ public class WinCondition : MonoBehaviour {
 	private TurnManager turnManager;
 	private int checkTurnChange;
 	private GameMechanic gameMechanic;
-	private Hexagon[] castlePosition = new Hexagon[]{
-		new Hexagon(-7, 0, 7), new Hexagon(0, -7, 7), new Hexagon(7, 0, -7), new Hexagon(0, 7, -7)
-	};
 	/*private Hexagon[] castlePosition = new Hexagon[]{
-		new Hexagon(-7, 0, 7), new Hexagon(7, 0, -7), new Hexagon(0, -7, 7), new Hexagon(0, 7, -7)
+		new Hexagon(-7, 0, 7), new Hexagon(0, -7, 7), new Hexagon(7, 0, -7), new Hexagon(0, 7, -7)
 	};*/
+	private Hexagon[] castlePosition = new Hexagon[]{
+		new Hexagon(-7, 0, 7), new Hexagon(7, 0, -7), new Hexagon(0, -7, 7), new Hexagon(0, 7, -7)
+	};
 	private NetworkManager networkManager;
 	public int[] castleConquerCount = new int[]{0, 0, 0, 0};
 	public bool[] checkCastleConquer = new bool[]{false, false, false, false};

@@ -13,22 +13,25 @@ public class Generator : MonoBehaviour {
 	public GameObject drivers;
 	public GameObject[] maps;
 	public GameObject[] environments;
-	private Vector3[] startAngle = new Vector3[]{
+	/*private Vector3[] startAngle = new Vector3[]{
 		new Vector3(0, 225, 0), new Vector3(0, 135, 0), new Vector3(0, 45, 0), new Vector3(0, 315, 0)
+	};*/
+	private Vector3[] startAngle = new Vector3[]{
+		new Vector3(0, 225, 0), new Vector3(0, 45, 0), new Vector3(0, 135, 0), new Vector3(0, 315, 0)
 	};
 
+	// private Hexagon[][] positionForEachTeam = new Hexagon[][]{
+	// 	new Hexagon[]{new Hexagon(-6,-1,7), /*new Hexagon(-5,-2,7),*/ new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), /*new Hexagon(-7,2,5),*/ new Hexagon(-7,1,6)},
+	// 	new Hexagon[]{new Hexagon(-1,-6,7), /*new Hexagon(-2,-5,7),*/ new Hexagon(-1,-5,6), new Hexagon(0,-5,5), new Hexagon(1,-6,5), /*new Hexagon(2,-7,5),*/ new Hexagon(1,-7,6)},
+	// 	new Hexagon[]{new Hexagon(7,-1,-6), /*new Hexagon(7,-2,-5),*/ new Hexagon(6,-1,-5), new Hexagon(5,0,-5), new Hexagon(5,1,-6), /*new Hexagon(5,2,-7),*/ new Hexagon(6,1,-7)},
+	// 	new Hexagon[]{new Hexagon(1,6,-7), /*new Hexagon(2,5,-7),*/ new Hexagon(1,5,-6), new Hexagon(0,5,-5), new Hexagon(-1,6,-5), /*new Hexagon(-2,7,-5),*/ new Hexagon(-1,7,-6)}
+	// };
 	private Hexagon[][] positionForEachTeam = new Hexagon[][]{
-		new Hexagon[]{new Hexagon(-6,-1,7), new Hexagon(-5,-2,7), new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), new Hexagon(-7,2,5), new Hexagon(-7,1,6)},
-		new Hexagon[]{new Hexagon(-1,-6,7), new Hexagon(-2,-5,7), new Hexagon(-1,-5,6), new Hexagon(0,-5,5), new Hexagon(1,-6,5), new Hexagon(2,-7,5), new Hexagon(1,-7,6)},
-		new Hexagon[]{new Hexagon(7,-1,-6), new Hexagon(7,-2,-5), new Hexagon(6,-1,-5), new Hexagon(5,0,-5), new Hexagon(5,1,-6), new Hexagon(5,2,-7), new Hexagon(6,1,-7)},
-		new Hexagon[]{new Hexagon(1,6,-7), new Hexagon(2,5,-7), new Hexagon(1,5,-6), new Hexagon(0,5,-5), new Hexagon(-1,6,-5), new Hexagon(-2,7,-5), new Hexagon(-1,7,-6)}
+		new Hexagon[]{new Hexagon(-6,-1,7), /*new Hexagon(-5,-2,7),*/ new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), /*new Hexagon(-7,2,5),*/ new Hexagon(-7,1,6)},
+		new Hexagon[]{new Hexagon(7,-1,-6), /*new Hexagon(7,-2,-5),*/ new Hexagon(6,-1,-5), new Hexagon(5,0,-5), new Hexagon(5,1,-6), /*new Hexagon(5,2,-7),*/ new Hexagon(6,1,-7)},
+		new Hexagon[]{new Hexagon(-1,-6,7), /*new Hexagon(-2,-5,7),*/ new Hexagon(-1,-5,6), new Hexagon(0,-5,5), new Hexagon(1,-6,5), /*new Hexagon(2,-7,5),*/ new Hexagon(1,-7,6)},
+		new Hexagon[]{new Hexagon(1,6,-7), /*new Hexagon(2,5,-7),*/ new Hexagon(1,5,-6), new Hexagon(0,5,-5), new Hexagon(-1,6,-5), /*new Hexagon(-2,7,-5),*/ new Hexagon(-1,7,-6)}
 	};
-	/*private Hexagon[][] positionForEachTeam = new Hexagon[][]{
-		new Hexagon[]{new Hexagon(-6,-1,7), new Hexagon(-5,-2,7), new Hexagon(-5,-1,6), new Hexagon(-5,0,5), new Hexagon(-6,1,5), new Hexagon(-7,2,5), new Hexagon(-7,1,6)},
-		new Hexagon[]{new Hexagon(7,-1,-6), new Hexagon(7,-2,-5), new Hexagon(6,-1,-5), new Hexagon(5,0,-5), new Hexagon(5,1,-6), new Hexagon(5,2,-7), new Hexagon(6,1,-7)},
-		new Hexagon[]{new Hexagon(-1,-6,7), new Hexagon(-2,-5,7), new Hexagon(-1,-5,6), new Hexagon(0,-5,5), new Hexagon(1,-6,5), new Hexagon(2,-7,5), new Hexagon(1,-7,6)},
-		new Hexagon[]{new Hexagon(1,6,-7), new Hexagon(2,5,-7), new Hexagon(1,5,-6), new Hexagon(0,5,-5), new Hexagon(-1,6,-5), new Hexagon(-2,7,-5), new Hexagon(-1,7,-6)}
-	};*/
 
 	//Generate map and return map gameobject
 	public GameObject GenerateMap(){
