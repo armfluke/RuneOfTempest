@@ -28,6 +28,7 @@ public class Unit : MonoBehaviour {
 	public Dictionary<string ,GameObject> unitState = new Dictionary<string, GameObject>();
 	private Cube cube;
 	private Database database;
+	public int debuffCount = 0;
 
 	public float CalculateDifferentAngle(){
 		//Calculate rotation angle

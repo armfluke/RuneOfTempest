@@ -173,7 +173,12 @@ public class Network : MonoBehaviour {
         List<Unit> units = gameMechanic.GetComponent<GameMechanic>().unit;
         foreach(Unit unit in units){
             if(unit.team == turnManager.currentTeamTurn){
-                unit.state = "Idle";
+                if(unit.debuffCount <= 0){
+                    unit.state = "Idle";
+                }else{
+                    unit.debuffCount--;
+                }
+                
                 if(unit.cooldown < 0){
                     unit.cooldown = 0;
                 }

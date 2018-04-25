@@ -131,6 +131,7 @@ public class Skill : MonoBehaviour {
 			foreach(Unit character in this.gameMechanic.unit){
 				//Check if there is unit in range and aren't on the same team
 				if(character.position.Compare(tile) && unit.team != character.team){
+					character.debuffCount = 1;
 					character.state = "Stun";
 				}
 			}
@@ -139,6 +140,7 @@ public class Skill : MonoBehaviour {
 
 	public void Freeze(Unit targetUnit){
 		targetUnit.state = "Freeze";
+		targetUnit.debuffCount = 1;
 		if(targetUnit.state == "Defend"){
 			targetUnit.hp -= this.database.skill["KnightSpirit"].damage - 1;
 		}else{
