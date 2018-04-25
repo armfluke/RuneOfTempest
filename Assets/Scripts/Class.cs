@@ -12,6 +12,7 @@ public class Class : MonoBehaviour {
 	private GameObject classTree;
 	private GameObject mainGame;
 	private Database database;
+	private TurnManager turnManager;
 
 	/*T CopyComponent<T>(T original, GameObject destination) where T : Component {
 		System.Type type = original.GetType();
@@ -40,7 +41,9 @@ public class Class : MonoBehaviour {
 			}
 		}
 		Unit newUnit = this.generator.GenerateUnit(nextClass, unit.unitName, unit.team, unit.position);
-		this.player.playerUnits.Add(newUnit);
+		if(this.player.team == this.turnManager.currentTeamTurn){
+			this.player.playerUnits.Add(newUnit);
+		}
 		newUnit.state = unit.state;
 		this.gameMechanic.selectedUnit = newUnit;
 		unit.Die();
@@ -57,6 +60,7 @@ public class Class : MonoBehaviour {
 		this.classTree = userInterface.transform.Find("Class").gameObject;
 		this.mainGame = userInterface.transform.Find("MainGame").gameObject;
 		this.database = gameObject.GetComponent<Database>();
+		this.turnManager = gameObject.GetComponent<TurnManager>();
 	}
 	
 	// Update is called once per frame

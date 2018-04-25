@@ -40,13 +40,13 @@ public class TurnManager : MonoBehaviour {
 		this.time -= Time.deltaTime;
 		this.network.SendTurnMessage(this.time, this.currentTeamTurn);
 
-		if(time <= 0){
+		if((this.time <= 0 || this.player.status == "Lose") && this.player.team == this.currentTeamTurn){
 			EndTurn();
 		}
 
-		if(this.player.status == "Lose" && this.player.team == this.currentTeamTurn){
+		/*if(this.player.status == "Lose" && this.player.team == this.currentTeamTurn){
 			EndTurn();
-		}
+		}*/
 
 	}
 }

@@ -19,8 +19,11 @@ public class WinCondition : MonoBehaviour {
 	private int checkTurnChange;
 	private GameMechanic gameMechanic;
 	private Hexagon[] castlePosition = new Hexagon[]{
-			new Hexagon(-7, 0, 7), new Hexagon(0, -7, 7), new Hexagon(7, 0, -7), new Hexagon(0, 7, -7)
-		};
+		new Hexagon(-7, 0, 7), new Hexagon(0, -7, 7), new Hexagon(7, 0, -7), new Hexagon(0, 7, -7)
+	};
+	/*private Hexagon[] castlePosition = new Hexagon[]{
+		new Hexagon(-7, 0, 7), new Hexagon(7, 0, -7), new Hexagon(0, -7, 7), new Hexagon(0, 7, -7)
+	};*/
 	private NetworkManager networkManager;
 	public int[] castleConquerCount = new int[]{0, 0, 0, 0};
 	public bool[] checkCastleConquer = new bool[]{false, false, false, false};
@@ -28,10 +31,6 @@ public class WinCondition : MonoBehaviour {
 	public bool[] playerLoseStatus = new bool[]{false, false, false, false};
 	public Text[] conquerCount;
 	public UserData userData;
-
-	public void OnSpectateClicked(){
-		
-	}
 
 	public void OnLobbyClicked(){
 		MatchInfo matchInfo = this.networkManager.matchInfo;
@@ -115,8 +114,8 @@ public class WinCondition : MonoBehaviour {
 
 						//increment conquer count
 						this.castleConquerCount[index]++;
-						//if conquer count == 3 set status of player of that castle to Lose
-						if(castleConquerCount[index] == 3 && this.player.castlePosition.x == position.x
+						//if conquer count == 2 set status of player of that castle to Lose
+						if(castleConquerCount[index] == 2 && this.player.castlePosition.x == position.x
 							&& this.player.castlePosition.y == position.y && this.player.castlePosition.z == position.z){
 								this.player.status = "Lose";
 						}

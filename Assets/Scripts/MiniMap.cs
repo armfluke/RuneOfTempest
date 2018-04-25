@@ -92,6 +92,7 @@ public class MiniMap : MonoBehaviour {
 			checkRange = CheckRange(range);
 
 			if(targetUnit && checkRange && targetUnit.team != this.selectedUnit.team){
+				ResetMiniMapHilightForSkill(this.database.skill[this.skill.currentSkill].range);
 				this.miniMap.SetActive(false);
 				this.mainGame.SetActive(true);
 				this.command.skill = false;

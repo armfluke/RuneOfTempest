@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 public class GameMechanic : MonoBehaviour {
 
-	public const int MAX_PLAYER = 4;
+	public const int MAX_PLAYER = 2;
 
 	private Cube cube = new Cube();
 	Generator generator;
