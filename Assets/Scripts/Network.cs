@@ -174,7 +174,6 @@ public class Network : MonoBehaviour {
         foreach(Unit unit in units){
             if(unit.team == turnManager.currentTeamTurn){
                 unit.state = "Idle";
-                unit.cooldown--;
                 if(unit.cooldown < 0){
                     unit.cooldown = 0;
                 }
