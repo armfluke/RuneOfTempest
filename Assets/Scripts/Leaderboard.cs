@@ -21,13 +21,43 @@ public class Leaderboard : MonoBehaviour {
     public static int Row = 50;
     public static int Column = 2;
     public string[,] arrayRanking = new string[Row, Column];
-    public string tempPrint = "";
+    private string tempPrint = "";
     public Text printText;
 
 
     public Task<DataSnapshot> ReadData()
     {
         return FirebaseDatabase.DefaultInstance.GetReference("UserData").GetValueAsync();
+    }
+
+    public void GetUserLeaderboard()
+    {
+        //read data
+        ReadData().ContinueWith(task => {
+            if (task.IsFaulted) {
+                // Handle the error...
+                Debug.Log("Error to read data from firebase database");
+
+            }else if (task.IsCompleted){
+                DataSnapshot snapshot = task.Result;
+                //read all key
+                IDictionary test = (IDictionary)snapshot.Value;
+                Dictionary<string, int> sortArray = new Dictionary<string, int>();
+
+                foreach (string key in test.Keys){
+                    sortArray[key] = Int32.Parse(snapshot.Child(key).Child("score").GetValue(true).ToString());
+                }
+
+                sortArray = sortArray.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                foreach(string key in sortArray.Keys){
+                    tempPrint += key + " " + sortArray[key] + "\n";
+                }
+
+                printText.text = tempPrint;
+            }
+            GameObject.Find("LoginRegisterCanvas").transform.Find("ErrorLoginPanel").gameObject.SetActive(true);
+        });
+
     }
 
     // Use this for initialization
@@ -37,9 +67,7 @@ public class Leaderboard : MonoBehaviour {
 
         // Get the root reference location of the database.
         this.reference = FirebaseDatabase.DefaultInstance.RootReference;
-
-        //initiate auth
-        Firebase.Auth.FirebaseAuth auth = Firebase.Auth.FirebaseAuth.DefaultInstance;
+        GetUserLeaderboard();
 
     }
 
