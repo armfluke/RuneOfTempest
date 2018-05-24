@@ -23,6 +23,9 @@ public class Leaderboard : MonoBehaviour {
     public string[,] arrayRanking = new string[Row, Column];
     private string tempPrint = "";
     public Text printText;
+    public Text user;
+    public Text score;
+    private UserData userData;
 
 
     public Task<DataSnapshot> ReadData()
@@ -69,10 +72,14 @@ public class Leaderboard : MonoBehaviour {
         this.reference = FirebaseDatabase.DefaultInstance.RootReference;
         GetUserLeaderboard();
 
+        this.userData = GameObject.Find("UserData").GetComponent<UserData>();
     }
 
     // Update is called once per frame
     void Update () {
-		
+		if(this.userData != null){
+            this.user.text = this.userData.username;
+            this.score.text = this.userData.score.ToString();
+        }
 	}
 }

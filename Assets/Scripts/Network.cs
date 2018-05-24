@@ -47,12 +47,21 @@ public class Network : MonoBehaviour {
         TeamAssignMessage message = msg.ReadMessage<TeamAssignMessage>();
         player.team = message.team;
         //Assign castle positon for each player team
-        if(player.team == 1){
+        /*if(player.team == 1){
             player.castlePosition = new Hexagon(-7, 0, 7);
         }else if(player.team == 2){
             player.castlePosition = new Hexagon(0, -7, 7);
         }else if(player.team == 3){
             player.castlePosition = new Hexagon(7, 0, -7);
+        }else if(player.team == 4){
+            player.castlePosition = new Hexagon(0, 7, -7);
+        }*/
+        if(player.team == 1){
+            player.castlePosition = new Hexagon(-7, 0, 7);
+        }else if(player.team == 2){
+            player.castlePosition = new Hexagon(7, 0, -7);
+        }else if(player.team == 3){
+            player.castlePosition = new Hexagon(0, -7, 7);
         }else if(player.team == 4){
             player.castlePosition = new Hexagon(0, 7, -7);
         }
